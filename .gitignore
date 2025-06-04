@@ -1,0 +1,66 @@
+# Visual Studio Code
+.vscode/
+
+# Visual Studio
+*.suo
+*.user
+*.sln.docstates
+*.vs/
+
+# Rider
+.idea/
+
+# Build results
+[Bb]in/
+[Oo]bj/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Nuget Packages
+packages/
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+# Verify this is true for your project if you do not use Package Restore
+
+# User-specific files
+*.DotSettings.user
+
+# FSharp
+*.fsx.lock
+
+# Endpoint Routing
+Properties/launchSettings.json
+
+# Others
+*.dbmdl
+_Resharper.*/
+*.[Pp]ublish.xml
+*.Cache
+project.lock.json
+project.assets.json
+# SQL Server files
+*.mdf
+*.ldf
+
+# Environment files (NEVER commit sensitive data)
+.env
+appsettings.Development.json
+# Web.config transformation files should be ignored if they contain secrets
+# Web.Debug.config
+# Web.Release.config
+# Consider using environment variables or Azure Key Vault for secrets in production.
+
+# LINQ to SQL (DBML)
+# The .dbml file itself is design-time, its .designer.cs is generated.
+# If you version control the .dbml, the .designer.cs will be regenerated.
+# However, if you have custom code in the .layout file, you might want to version control it.
+# *.layout
+
+# Service Fabric
+*.SFPublishProfiles.xml
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log

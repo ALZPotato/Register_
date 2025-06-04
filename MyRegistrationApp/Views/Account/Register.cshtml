@@ -1,0 +1,175 @@
+﻿@model MyRegistrationApp.Models.RegisterViewModel
+
+@{
+    ViewBag.Title = "Tham Gia The Coffee";
+    Layout = null; // Bỏ Layout mặc định nếu có, để tự do thiết kế
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - The Coffee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #fdfaf6; /* Màu kem rất nhạt, ấm hơn trắng tinh */
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .register-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+            .register-container h2 {
+                font-family: 'Merriweather', serif;
+                color: #4a3b31; /* Màu nâu cà phê đậm */
+                margin-top: 0;
+                margin-bottom: 15px;
+                font-size: 28px;
+            }
+
+            .register-container p.subtitle {
+                color: #777;
+                margin-bottom: 30px;
+                font-size: 1em;
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: 600;
+                margin-bottom: 8px;
+                color: #555;
+                font-size: 0.9em;
+            }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+            .form-control:focus {
+                border-color: #8c6e5a; /* Màu nâu cà phê nhạt hơn khi focus */
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(74, 59, 49, 0.1);
+            }
+
+        .btn-submit {
+            background-color: #4a3b31; /* Màu nâu cà phê đậm */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+            .btn-submit:hover {
+                background-color: #382d26; /* Nâu đậm hơn khi hover */
+            }
+
+        .text-danger, .validation-summary-errors ul {
+            color: #d9534f; /* Màu đỏ cho lỗi */
+            font-size: 0.85em;
+            list-style: none;
+            padding-left: 0;
+            margin-top: 5px;
+        }
+
+        .validation-summary-errors {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        /* Simple coffee bean icon (optional, can use FontAwesome or SVG for better ones) */
+        .coffee-icon::before {
+            content: "☕"; /* Hoặc một SVG/ảnh nhỏ */
+            font-size: 20px;
+            margin-right: 8px;
+            color: #4a3b31;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2><span class="coffee-icon"></span>@ViewBag.Title</h2>
+        <p class="subtitle">Tạo tài khoản để khám phá hương vị cà phê độc đáo của chúng tôi.</p>
+
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Username, "Tên đăng nhập")
+                @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Nhập tên đăng nhập" })
+                @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password, "Mật khẩu")
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Nhập mật khẩu" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword, "Xác nhận mật khẩu")
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Nhập lại mật khẩu" })
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.FullName, "Họ và tên")
+                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Nhập họ và tên của bạn" })
+                @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Business, "Chuyên ngành của bạn")
+                @Html.DropDownListFor(m => m.Business, Model.MajorOptions, "-- Chọn chuyên ngành --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Business, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Đăng Ký Ngay" class="btn-submit" />
+            </div>
+        }
+    </div>
+
+    @* Bạn có thể cần Scripts.Render("~/bundles/jqueryval") nếu dùng client-side validation
+           và không có layout page. Nếu không dùng client-side thì bỏ qua.
+        <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+        <script src="~/Scripts/jquery.validate.min.js"></script>
+        <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    *@
+</body>
+</html>

@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "Đăng Ký Thành Công!";
+    Layout = null; // Bỏ Layout mặc định nếu có
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - The Coffee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #fdfaf6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .success-container {
+            background-color: #ffffff;
+            padding: 50px 40px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+            .success-container h2 {
+                font-family: 'Merriweather', serif;
+                color: #4a3b31; /* Màu nâu cà phê đậm */
+                margin-top: 0;
+                margin-bottom: 20px;
+                font-size: 32px;
+            }
+
+        .success-icon {
+            font-size: 60px;
+            color: #6f4e37; /* Màu nâu cà phê vừa */
+            margin-bottom: 25px;
+            display: block;
+        }
+            /* Thay thế bằng icon thực tế nếu có (SVG, FontAwesome) */
+            .success-icon::before {
+                content: "🎉"; /* Hoặc ☕, ✓ */
+            }
+
+
+        .success-container p {
+            color: #555;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.7;
+        }
+
+        .action-links a {
+            display: inline-block;
+            background-color: #4a3b31;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 0 10px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 1em;
+        }
+
+            .action-links a:hover {
+                background-color: #382d26;
+                transform: translateY(-2px);
+            }
+
+            .action-links a.secondary {
+                background-color: #f0ebe5; /* Màu kem nhạt */
+                color: #4a3b31;
+                border: 1px solid #dcd3ca;
+            }
+
+                .action-links a.secondary:hover {
+                    background-color: #e6ded7;
+                }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <span class="success-icon"></span>
+        <h2>@ViewBag.Title</h2>
+        <p>@ViewBag.Message</p>
+        <p>Chào mừng bạn đến với The Coffee. Hãy bắt đầu hành trình khám phá hương vị tuyệt vời!</p>
+        <div class="action-links">
+            @if (User.Identity.IsAuthenticated) // Hoặc một cách khác để kiểm tra logic đăng nhập
+            {
+                @Html.ActionLink("Về Trang Chủ", "Index", "Home", null, new { @class = "primary" })
+            }
+            else
+            {
+                @Html.ActionLink("Đăng Nhập Ngay", "Login", "Account", null, new { @class = "primary" })
+                @Html.ActionLink("Khám Phá Thêm", "Index", "Home", null, new { @class = "secondary" })
+            }
+        </div>
+    </div>
+</body>
+</html>
