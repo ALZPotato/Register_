@@ -1,0 +1,204 @@
+﻿@model MyRegistrationApp.Product
+
+@{
+    ViewBag.Title = Model.ProductName; // Lấy tên sản phẩm làm tiêu đề
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <style>
+        /* CSS đặc thù cho trang chi tiết sản phẩm */
+        .product-detail-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .product-detail-image {
+            flex: 1 1 400px; /* Chiếm khoảng 40% */
+        }
+
+            .product-detail-image img {
+                width: 100%;
+                border-radius: 8px;
+                border: 1px solid #eee;
+            }
+
+        .product-detail-info {
+            flex: 1 1 500px; /* Chiếm phần còn lại */
+        }
+
+            .product-detail-info .product-name {
+                font-size: 2.5em;
+                margin-top: 0;
+                margin-bottom: 10px;
+                line-height: 1.2;
+            }
+
+            .product-detail-info .category-link {
+                display: block;
+                margin-bottom: 15px;
+                font-size: 1.1em;
+                color: #777;
+            }
+
+                .product-detail-info .category-link a {
+                    color: #8B5A2B;
+                    font-weight: 600;
+                }
+
+            .product-detail-info .product-price-detail {
+                font-size: 2.2em;
+                font-weight: 700;
+                color: #8B5A2B;
+                margin-bottom: 20px;
+            }
+
+            .product-detail-info .stock-status {
+                font-size: 1em;
+                font-weight: 600;
+                margin-bottom: 25px;
+            }
+
+        .stock-status .in-stock {
+            color: #28a745; /* a green color */
+        }
+
+        .stock-status .out-of-stock {
+            color: #dc3545; /* a red color */
+        }
+
+        .add-to-cart-form {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+            .add-to-cart-form .quantity-input {
+                width: 80px;
+                text-align: center;
+                padding: 10px;
+                font-size: 1.2em;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            .add-to-cart-form .btn-add-to-cart-detail {
+                background-color: #8B5A2B;
+                color: white;
+                border: none;
+                padding: 12px 25px;
+                font-size: 1.1em;
+                font-weight: 600;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+                .add-to-cart-form .btn-add-to-cart-detail:hover {
+                    background-color: #7A4D22;
+                }
+
+                .add-to-cart-form .btn-add-to-cart-detail:disabled {
+                    background-color: #ccc;
+                    cursor: not-allowed;
+                }
+
+
+        .product-description-full {
+            margin-top: 30px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+            .product-description-full h3 {
+                border-bottom: 2px solid #eee;
+                padding-bottom: 10px;
+                margin-bottom: 15px;
+            }
+    </style>
+}
+
+<div class="container">
+    <div class="product-detail-container">
+        <!-- Cột hình ảnh sản phẩm -->
+        <div class="product-detail-image">
+            @if (!string.IsNullOrEmpty(Model.ImageFileName))
+            {
+                <img src="@Url.Content("~/Uploads/ProductImages/" + Model.ImageFileName)" alt="@Model.ProductName" />
+            }
+            else
+            {
+                <img src="@Url.Content("~/Content/Images/placeholder-product.png")" alt="Chưa có ảnh" />
+            }
+        </div>
+
+        <!-- Cột thông tin và mua hàng -->
+        <div class="product-detail-info">
+            <h1 class="product-name">@Model.ProductName</h1>
+
+            @if (Model.Category != null)
+            {
+                <span class="category-link">
+                    Trong danh mục:
+                    <a href="@Url.Action("Products", "Home", new { categoryName = Model.Category.CategoryName.Replace(" ", "-") })">
+                        @Model.Category.CategoryName
+                    </a>
+                </span>
+            }
+
+            <div class="product-price-detail">@string.Format("{0:N0} VNĐ", Model.Price)</div>
+
+            <div class="stock-status">
+                @if (Model.StockQuantity > 0)
+                {
+                    <span class="in-stock"><i class="fas fa-check-circle"></i> Còn hàng (@Model.StockQuantity sản phẩm)</span>
+                }
+                else
+                {
+                    <span class="out-of-stock"><i class="fas fa-times-circle"></i> Hết hàng</span>
+                }
+            </div>
+
+            @* Form để thêm vào giỏ hàng *@
+            @if (Request.IsAuthenticated) // Nếu người dùng ĐÃ đăng nhập
+            {
+                @* Hiển thị form "Thêm vào giỏ hàng" bình thường *@
+                using (Html.BeginForm("AddToCart", "Cart", FormMethod.Post, new { @class = "add-to-cart-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("productId", Model.ProductID)
+
+                    <label for="quantity" class="sr-only">Số lượng</label>
+                    <input type="number" name="quantity" id="quantity" value="1" min="1" max="@(Model.StockQuantity > 0 ? Model.StockQuantity : 1)" class="quantity-input" @(Model.StockQuantity > 0 ? "" : "disabled") />
+
+                    <button type="submit" class="btn-add-to-cart-detail" @(Model.StockQuantity > 0 ? "" : "disabled")>
+                        <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
+                    </button>
+                }
+            }
+            else // Nếu người dùng CHƯA đăng nhập
+            {
+                @* Hiển thị một nút khác, trỏ đến trang Đăng nhập *@
+                <div class="add-to-cart-form">
+                    @* Tạo link đến trang Login, với ReturnUrl là trang chi tiết sản phẩm hiện tại *@
+                    @Html.ActionLink("Đăng nhập để mua hàng", "Login", "Account",
+                        new { returnUrl = Request.Url.PathAndQuery },
+                        new { @class = "btn-add-to-cart-detail" })
+                </div>
+                <p class="text-muted"><small>Bạn cần đăng nhập để có thể thêm sản phẩm vào giỏ hàng.</small></p>
+            }
+
+            <hr />
+
+            <div class="product-description-full">
+                <h3>Mô Tả Sản Phẩm</h3>
+                @Html.Raw(Model.Description) @* Dùng Html.Raw để render HTML nếu có *@
+            </div>
+
+        </div>
+    </div>
+</div>

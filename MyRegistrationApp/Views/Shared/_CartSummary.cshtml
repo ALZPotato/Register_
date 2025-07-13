@@ -1,0 +1,8 @@
+﻿@* File: Views/Shared/_CartSummary.cshtml *@
+@* Đoạn mã này sẽ tạo link đến trang giỏ hàng và hiển thị số lượng sản phẩm *@
+
+<a href="@Url.Action("Index", "Cart")" title="Xem giỏ hàng của bạn">
+    <i class="fas fa-shopping-cart"></i> @* Icon giỏ hàng từ Font Awesome *@
+    Giỏ Hàng
+    <span class="badge">@ViewBag.CartItemCount</span> @* Hiển thị số lượng từ ViewBag *@
+</a>

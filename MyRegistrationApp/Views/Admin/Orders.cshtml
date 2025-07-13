@@ -1,0 +1,87 @@
+﻿@model IEnumerable<MyRegistrationApp.Order>
+
+@{
+    ViewBag.Title = "Quản Lý Đơn Hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2><i class="fas fa-file-invoice-dollar"></i> @ViewBag.Title</h2>
+<hr />
+
+@* Form tìm kiếm và lọc *@
+@using (Html.BeginForm("Orders", "Admin", FormMethod.Get, new { @class = "form-inline", style = "margin-bottom: 20px;" }))
+{
+    <div class="form-group">
+        @Html.Label("searchString", "Tìm kiếm:", new { @class = "sr-only" })
+        @Html.TextBox("searchString", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Mã ĐH, Tên, SĐT..." })
+    </div>
+    <div class="form-group" style="margin-left:10px;">
+        @Html.Label("statusFilter", "Trạng thái:", new { @class = "sr-only" })
+        @Html.DropDownList("statusFilter", (IEnumerable<SelectListItem>)ViewBag.StatusOptions, new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-primary" style="margin-left:10px;"><i class="fas fa-filter"></i> Lọc</button>
+    @Html.ActionLink("Xóa bộ lọc", "Orders", null, new { @class = "btn btn-info", style = "margin-left:5px;" })
+}
+
+<table class="table table-bordered table-hover table-striped">
+    <thead>
+        <tr>
+            <th style="width: 80px;">Mã ĐH</th>
+            <th>Tên Khách Hàng</th>
+            <th>Số Điện Thoại</th>
+            <th style="text-align:right;">Tổng Tiền</th>
+            <th style="text-align:center;">Trạng Thái</th>
+            <th>Ngày Đặt</th>
+            <th style="width: 120px; text-align:center;">Hành Động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="7" class="text-center" style="padding:20px;">Không có đơn hàng nào.</td>
+            </tr>
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="font-weight:bold;">#@Html.DisplayFor(modelItem => item.OrderID)</td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RecipientName)<br />
+                    <small class="text-muted">@Html.DisplayFor(modelItem => item.User.Username)</small> 
+                </td>
+                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                <td style="text-align:right;">@string.Format("{0:N0} VNĐ", item.TotalAmount)</td>
+                <td style="text-align:center;">
+                    @* Thêm style cho các trạng thái khác nhau *@
+                    @if (item.Status == "Đã hoàn thành")
+                    {
+                        <span class="label label-success">@item.Status</span>
+                    }
+                    else if (item.Status == "Đã hủy")
+                    {
+                        <span class="label label-danger">@item.Status</span>
+                    }
+                    else if (item.Status == "Đang giao hàng")
+                    {
+                        <span class="label label-info">@item.Status</span>
+                    }
+                    else if (item.Status == "Chờ thanh toán")
+                    {
+                        <span class="label label-warning">@item.Status</span>
+                    }
+                    else
+                    {
+                        <span class="label label-default">@item.Status</span>
+                    }
+                </td>
+                <td>@item.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                <td style="text-align:center;">
+                    @Html.ActionLink("Xem Chi Tiết", "OrderDetail", new { id = item.OrderID }, new { @class = "btn btn-info btn-xs" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@* Nếu bạn có phân trang, Pager sẽ ở đây *@

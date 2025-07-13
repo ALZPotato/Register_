@@ -1,0 +1,156 @@
+﻿@model MyRegistrationApp.Models.AdminOrderDetailViewModel
+
+@{
+    ViewBag.Title = ViewBag.Title; 
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section styles {
+    <style>
+        /* CSS bạn đã có cho .order-detail-card vẫn có thể dùng được */
+        .order-detail-card {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+            .order-detail-card h4 {
+                margin-top: 0;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+                margin-bottom: 15px;
+                color: #337ab7;
+                font-size: 1.3em;
+                font-weight: 600;
+            }
+
+                .order-detail-card h4 i {
+                    margin-right: 8px;
+                }
+
+            .order-detail-card .dl-horizontal dt {
+                font-weight: 600;
+                width: 140px;
+            }
+
+            .order-detail-card .dl-horizontal dd {
+                margin-left: 160px;
+            }
+    </style>
+}
+
+<h2>@ViewBag.Title</h2>
+<p>
+    @Html.ActionLink("← Quay lại Danh sách Đơn hàng", "Orders", null, new { @class = "btn btn-default btn-sm" })
+</p>
+<hr />
+
+<div class="row">
+    @* === CỘT BÊN TRÁI: THÔNG TIN KHÁCH HÀNG & GIAO HÀNG === *@
+    <div class="col-md-6">
+        <div class="order-detail-card">
+            <h4><i class="fas fa-user-circle"></i> Thông Tin Khách Hàng</h4>
+            <dl class="dl-horizontal">
+                <dt>Tên Khách Hàng:</dt>
+                <dd>@Model.CustomerFullName</dd> @* Truy cập thuộc tính từ ViewModel *@
+
+                <dt>Username:</dt>
+                <dd>@Model.CustomerUsername</dd>
+
+                <dt>Ngày Đặt Hàng:</dt>
+                <dd>@Model.OrderDate.ToString("dd/MM/yyyy HH:mm:ss")</dd>
+            </dl>
+        </div>
+
+        <div class="order-detail-card">
+            <h4><i class="fas fa-shipping-fast"></i> Thông Tin Giao Hàng</h4>
+            <dl class="dl-horizontal">
+                <dt>Người Nhận:</dt>
+                <dd>@Model.RecipientName</dd>
+
+                <dt>Địa Chỉ:</dt>
+                <dd>@Model.ShippingAddress</dd>
+
+                <dt>Số Điện Thoại:</dt>
+                <dd>@Model.PhoneNumber</dd>
+
+                <dt>Email Liên Hệ:</dt>
+                <dd>@Model.Email</dd>
+
+                @if (!string.IsNullOrEmpty(Model.Notes))
+                {
+                    <dt>Ghi Chú:</dt>
+                    <dd>@Model.Notes</dd>
+                }
+            </dl>
+        </div>
+    </div>
+
+    @* === CỘT BÊN PHẢI: CHI TIẾT SẢN PHẨM & CẬP NHẬT TRẠNG THÁI === *@
+    <div class="col-md-6">
+        <div class="order-detail-card">
+            <h4><i class="fas fa-tasks"></i> Cập Nhật Trạng Thái</h4>
+            @using (Html.BeginForm("UpdateOrderStatus", "Admin", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.Hidden("orderId", Model.OrderID)
+                <div class="form-group">
+                    <label for="status">Thay đổi trạng thái thành:</label>
+                    @* DropDownList này sử dụng StatusOptions từ ViewModel *@
+                    @Html.DropDownList("status", new SelectList(Model.StatusOptions, "Value", "Text", Model.CurrentStatus), new { @class = "form-control" })
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Cập nhật</button>
+            }
+            <p style="margin-top: 15px;">
+                <strong>Trạng thái hiện tại: </strong>
+                @if (Model.CurrentStatus == "Đã hoàn thành")
+                {<span class="label label-success">@Model.CurrentStatus</span> }
+            else if (Model.CurrentStatus == "Đã hủy")
+            { <span class="label label-danger">@Model.CurrentStatus</span> }
+        else if (Model.CurrentStatus == "Đang giao hàng")
+        { <span class="label label-info">@Model.CurrentStatus</span> }
+    else if (Model.CurrentStatus == "Chờ thanh toán")
+    { <span class="label label-warning">@Model.CurrentStatus</span> }
+else
+{ <span class="label label-default">@Model.CurrentStatus</span>}
+            </p>
+        </div>
+
+        <div class="order-detail-card">
+            <h4><i class="fas fa-receipt"></i> Chi Tiết Sản Phẩm</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Sản Phẩm</th>
+                        <th class="text-center">Số Lượng</th>
+                        <th class="text-right">Đơn Giá</th>
+                        <th class="text-right">Thành Tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @* Lặp qua danh sách Items (kiểu List<OrderDetailViewModel>) *@
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                @Html.ActionLink(item.ProductName, "EditProduct", new { id = item.ProductID })
+                            </td>
+                            <td class="text-center">@item.Quantity</td>
+                            <td class="text-right">@string.Format("{0:N0}", item.Price)</td>
+                            <td class="text-right">@string.Format("{0:N0}", item.Total)</td> @* Dùng thuộc tính tính toán Total *@
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight:bold; font-size:1.2em; border-top: 2px solid #333;">
+                        <td colspan="3" class="text-right">Tổng Cộng:</td>
+                        <td class="text-right">@string.Format("{0:N0} VNĐ", Model.TotalAmount)</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

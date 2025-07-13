@@ -1,0 +1,219 @@
+﻿@model MyRegistrationApp.Models.CartViewModel
+@{
+    ViewBag.Title = "Giỏ Hàng Của Bạn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <style>
+        .cart-page-container {
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        .cart-table thead th {
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #4A3B31;
+            background-color: #f8f8f8;
+            border-bottom-width: 2px;
+        }
+
+        .cart-table tbody td {
+            vertical-align: middle !important;
+        }
+
+        .product-info-cart {
+            display: flex;
+            align-items: center;
+        }
+
+            .product-info-cart img {
+                max-width: 80px;
+                margin-right: 15px;
+                border: 1px solid #eee;
+                border-radius: 4px;
+            }
+
+            .product-info-cart .product-name-cart a {
+                font-size: 1.1em;
+                color: #333;
+                font-weight: 600;
+                text-decoration: none;
+            }
+
+                .product-info-cart .product-name-cart a:hover {
+                    color: #8B5A2B;
+                }
+
+            .product-info-cart .remove-item-cart {
+                font-size: 0.9em;
+                color: #a94442;
+                text-decoration: none;
+            }
+
+                .product-info-cart .remove-item-cart:hover {
+                    text-decoration: underline;
+                }
+
+        .quantity-form-cart {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .quantity-form-cart input[type="number"] {
+                width: 60px;
+                text-align: center;
+                border-radius: 4px 0 0 4px;
+                border-right: none;
+            }
+
+            .quantity-form-cart .btn-update-cart {
+                border-radius: 0 4px 4px 0;
+                padding: 6px 10px; /* Cùng chiều cao với input */
+            }
+
+        .cart-summary-box {
+            background-color: #fdfdfd;
+            border: 1px solid #eee;
+            padding: 20px 25px;
+            border-radius: 6px;
+        }
+
+            .cart-summary-box h4 {
+                margin-top: 0;
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+
+            .cart-summary-box .summary-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 15px;
+                font-size: 1.1em;
+            }
+
+            .cart-summary-box .summary-total {
+                font-weight: bold;
+                font-size: 1.3em;
+                padding-top: 15px;
+                border-top: 2px solid #333;
+            }
+
+        .cart-actions {
+            margin-top: 20px;
+        }
+
+            .cart-actions .btn {
+                margin-bottom: 10px;
+            }
+
+        .empty-cart-message {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: #fff;
+            border: 1px dashed #ddd;
+            border-radius: 6px;
+        }
+
+            .empty-cart-message i {
+                font-size: 4em;
+                color: #ccc;
+                margin-bottom: 20px;
+            }
+    </style>
+}
+
+<div class="container cart-page-container">
+    <h2><i class="fas fa-shopping-cart"></i> @ViewBag.Title</h2>
+    <hr />
+
+    @if (Model == null || !Model.CartItems.Any())
+    {
+        <div class="empty-cart-message">
+            <i class="fas fa-cart-arrow-down"></i>
+            <h3>Giỏ hàng của bạn đang trống</h3>
+            <p>Hãy khám phá các sản phẩm tuyệt vời của chúng tôi và thêm chúng vào giỏ hàng nhé!</p>
+            <p>@Html.ActionLink("Bắt đầu mua sắm", "Products", "Home", null, new { @class = "btn btn-primary btn-lg" })</p>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @* Cột danh sách sản phẩm trong giỏ hàng *@
+            <div class="col-md-8">
+                <table class="table cart-table">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Sản Phẩm</th>
+                            <th class="text-center">Số Lượng</th>
+                            <th class="text-right">Đơn Giá</th>
+                            <th class="text-right">Thành Tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <tr>
+                                <td style="width: 120px;">
+                                    <a href="@Url.Action("ProductDetail", "Home", new { id = item.Product.ProductID })">
+                                        <img src="@Url.Content(string.IsNullOrEmpty(item.Product.ImageFileName) ? "~/Content/Images/placeholder-product.png" : "~/Uploads/ProductImages/" + item.Product.ImageFileName)"
+                                             alt="@item.Product.ProductName" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="product-info-cart">
+                                        <div>
+                                            <div class="product-name-cart">
+                                                @Html.ActionLink(item.Product.ProductName, "ProductDetail", "Home", new { id = item.Product.ProductID })
+                                            </div>
+                                            <a href="@Url.Action("RemoveFromCart", "Cart", new { productId = item.Product.ProductID })" class="remove-item-cart">
+                                                <i class="fas fa-trash-alt"></i> Xóa
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center" style="width: 150px;">
+                                    @using (Html.BeginForm("UpdateCart", "Cart", FormMethod.Post, new { @class = "quantity-form-cart" }))
+                                    {
+                                        @Html.Hidden("productId", item.Product.ProductID)
+                                        <input type="number" name="quantity" value="@item.Quantity" min="1" max="99" class="form-control" />
+                                        <button type="submit" class="btn btn-default btn-update-cart" title="Cập nhật"><i class="fas fa-sync-alt"></i></button>
+                                    }
+                                </td>
+                                <td class="text-right">@string.Format("{0:N0} VNĐ", item.Product.Price)</td>
+                                <td class="text-right"><strong>@string.Format("{0:N0} VNĐ", item.Product.Price * item.Quantity)</strong></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @* Cột tóm tắt và thanh toán *@
+            <div class="col-md-4">
+                <div class="cart-summary-box">
+                    <h4>Tóm Tắt Đơn Hàng</h4>
+                    <div class="summary-row">
+                        <span>Tạm tính</span>
+                        <span>@string.Format("{0:N0} VNĐ", Model.TotalPrice)</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Phí vận chuyển</span>
+                        <span>Sẽ được tính</span>
+                    </div>
+                    <hr />
+                    <div class="summary-row summary-total">
+                        <span>Tổng Cộng</span>
+                        <span>@string.Format("{0:N0} VNĐ", Model.TotalPrice)</span>
+                    </div>
+                    <div class="cart-actions">
+                        <a href="@Url.Action("Checkout", "Order")" class="btn btn-success btn-block btn-lg">Tiến Hành Thanh Toán</a>
+                        <a href="@Url.Action("Products", "Home")" class="btn btn-default btn-block">Tiếp tục mua sắm</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

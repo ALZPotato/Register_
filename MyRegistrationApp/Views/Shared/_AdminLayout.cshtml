@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Quản Trị The Coffee</title>
+    @* Link đến CSS Bootstrap (ví dụ từ CDN hoặc local) *@
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    @* Link đến Font Awesome (ví dụ từ CDN) *@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    @* Link đến Site.css (CSS chung của bạn) *@
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    @* Link đến AdminStyles.css (CSS riêng cho trang Admin - bạn sẽ tạo file này) *@
+    <link href="@Url.Content("~/Content/AdminStyles.css")" rel="stylesheet" type="text/css" />
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top admin-navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#admin-navbar-collapse" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("The Coffee Admin", "Index", "Admin", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="collapse navbar-collapse" id="admin-navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Quản Lý Phản Hồi", "Feedbacks", "Admin")</li>
+                    <li>@Html.ActionLink("Quản Lý Sản Phẩm", "Products", "Admin")</li>
+                    <li>@Html.ActionLink("Quản Lý Đơn Hàng", "Orders", "Admin")</li>
+                    @* <li>@Html.ActionLink("Quản Lý Danh Mục", "Categories", "Admin")</li> *@
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <li><a href="#"><i class="fas fa-user-shield"></i> @User.Identity.Name</a></li>
+                        <li>
+                            @using (Html.BeginForm("LogOut", "Account", FormMethod.Post, new { id = "adminLayoutLogoutForm" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <a href="javascript:document.getElementById('adminLayoutLogoutForm').submit()"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                            }
+                        </li>
+                    }
+                    <li><a href="@Url.Action("Index", "Home")" target="_blank"><i class="fas fa-home"></i> Xem Trang Web</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid admin-main-content-area" style="padding-top: 70px;">
+        @* padding-top để không bị navbar che *@
+        @if (TempData["AdminMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                @TempData["AdminMessage"]
+            </div>
+        }
+        @if (TempData["AdminError"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                @TempData["AdminError"]
+            </div>
+        }
+        @RenderBody()
+    </div>
+
+    <footer class="admin-footer text-center" style="padding: 20px 0; margin-top: 30px; border-top: 1px solid #eee;">
+        <p>© @DateTime.Now.Year - The Coffee Admin Panel</p>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

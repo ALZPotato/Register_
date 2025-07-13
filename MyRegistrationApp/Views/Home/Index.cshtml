@@ -1,33 +1,102 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = ViewBag.PageTitle ?? "Trang Chủ - The Coffee";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Đảm bảo dòng này được kích hoạt
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+@* TOÀN BỘ HTML BÊN DƯỚI SẼ ĐƯỢC CHÈN VÀO @RenderBody() CỦA _Layout.cshtml *@
+@* Không cần <main class="main-content"> ở đây nếu _Layout.cshtml đã có div bao quanh @RenderBody()
+    hoặc nếu padding-top cho body trong Site.css đã xử lý việc header che nội dung.
+    Nếu Site.css có class .main-content với padding-top, bạn có thể bao bọc nội dung này bằng div đó.
+    Giả sử Site.css đã có padding-top cho body, chúng ta có thể bỏ qua .main-content ở đây.
+*@
 
-    <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1>@(ViewBag.HeroTitle ?? "Khám Phá Hương Vị Cà Phê Đích Thực")</h1>
+            <p>@(ViewBag.HeroSubtitle ?? "Từ những hạt cà phê chất lượng đến dụng cụ pha chế hoàn hảo, The Coffee mang đến trải nghiệm tuyệt vời cho bạn.")</p>
+            <a href="@Url.Action("Products", "Home")" class="btn-cta">Khám Phá Ngay</a>
+        </div>
     </div>
-</main>
+</section>
+
+<!-- Featured Products Section -->
+<section class="section section-bg-light">
+    <div class="container">
+        <div class="section-title">
+            <h2>Sản Phẩm Nổi Bật</h2>
+            <p class="subtitle">Những lựa chọn được yêu thích nhất từ The Coffee.</p>
+        </div>
+        <div class="product-grid">
+            <!-- Product Item 1 -->
+            <div class="product-card">
+                <img src="@Url.Content("~/Content/Images/product-featured-1.jpg")" alt="Cà Phê Hạt Đặc Biệt">
+                <div class="product-info">
+                    <div>
+                        <h4>Cà Phê Hạt Rang Đặc Biệt</h4>
+                        <p class="price">250.000 VNĐ</p>
+                    </div>
+                    <a href="#" class="btn-view-product">Xem Chi Tiết</a> @* Sửa link sau *@
+                </div>
+            </div>
+            <!-- Product Item 2 -->
+            <div class="product-card">
+                <img src="@Url.Content("~/Content/Images/product-featured-2.jpg")" alt="Bộ Dụng Cụ Pha Phin">
+                <div class="product-info">
+                    <div>
+                        <h4>Bộ Dụng Cụ Pha Phin Cao Cấp</h4>
+                        <p class="price">380.000 VNĐ</p>
+                    </div>
+                    <a href="#" class="btn-view-product">Xem Chi Tiết</a> @* Sửa link sau *@
+                </div>
+            </div>
+            <!-- Product Item 3 -->
+            <div class="product-card">
+                <img src="@Url.Content("~/Content/Images/product-featured-3.jpg")" alt="Ly Sứ Giữ Nhiệt">
+                <div class="product-info">
+                    <div>
+                        <h4>Ly Sứ Giữ Nhiệt The Coffee</h4>
+                        <p class="price">180.000 VNĐ</p>
+                    </div>
+                    <a href="#" class="btn-view-product">Xem Chi Tiết</a> @* Sửa link sau *@
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Us Teaser -->
+<section class="section">
+    <div class="container">
+        <div class="about-teaser">
+            <div class="about-teaser-image">
+                <img src="@Url.Content("~/Content/Images/about-teaser-img.jpg")" alt="Về The Coffee">
+            </div>
+            <div class="about-teaser-content">
+                <div class="section-title" style="text-align:left; margin-bottom:15px;">
+                    <h2 style="font-size: 2.1em;">Về The Coffee</h2>
+                </div>
+                <p>Tại The Coffee, chúng tôi đam mê từng hạt cà phê. Từ việc lựa chọn những hạt cà phê Arabica và Robusta chất lượng nhất từ các vùng trồng uy tín, đến quy trình rang xay thủ công tỉ mỉ, chúng tôi cam kết mang đến cho bạn những trải nghiệm cà phê đích thực.</p>
+                <p>Hãy cùng chúng tôi khám phá hành trình từ nông trại đến tách cà phê hoàn hảo.</p>
+                <a href="@Url.Action("About", "Home")" class="btn-cta" style="font-size:0.9em; padding: 12px 25px;">Tìm Hiểu Thêm</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Bar -->
+<section class="cta-bar">
+    <div class="container">
+        <h3>Tham Gia Cộng Đồng Yêu Cà Phê Của Chúng Tôi</h3>
+        <p>Đăng ký nhận bản tin để không bỏ lỡ các ưu đãi đặc biệt và kiến thức thú vị về cà phê.</p>
+        <a href="@Url.Action("Register", "Account")" class="btn-cta" style="background-color: #FFF8DC; color:#4A3B31;">Đăng Ký Ngay</a>
+    </div>
+</section>
+
+@* Nếu trang Index cần script riêng, bạn có thể thêm vào đây *@
+@section scripts {
+    <script type="text/javascript">
+        // console.log("Trang Index đã tải script riêng.");
+    </script>
+}

@@ -1,0 +1,91 @@
+﻿@model MyRegistrationApp.Models.ProductViewModel
+@{
+    ViewBag.Title = "Thêm Sản Phẩm Mới";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2><i class="fas fa-plus-circle"></i> @ViewBag.Title</h2>
+<hr />
+
+@using (Html.BeginForm("CreateProduct", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    @* Hiển thị lỗi validation summary nếu có *@
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            <strong>Vui lòng sửa các lỗi sau:</strong>
+            @Html.ValidationSummary(false, "", new { @class = "validation-summary-list" })
+        </div>
+    }
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control", placeholder = "Nhập tên sản phẩm" } })
+            @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.Description, 10, 3, new { @class = "form-control", placeholder = "Nhập mô tả chi tiết cho sản phẩm...", id = "productDescriptionEditor" })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control", type = "number", step = "1000", min = "0", placeholder = "Ví dụ: 150000" } })
+            @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.StockQuantity, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.StockQuantity, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0", placeholder = "Ví dụ: 100" } })
+            @Html.ValidationMessageFor(model => model.StockQuantity, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.CategoryID, "Danh Mục", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.CategoryID, Model.CategoryOptions, "-- Chọn Danh Mục --", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.CategoryID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ProductImageFile, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <input type="file" name="ProductImageFile" id="ProductImageFile" class="form-control-file" accept="image/jpeg,image/png,image/gif" />
+            @Html.ValidationMessageFor(model => model.ProductImageFile, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <div class="checkbox" style="padding-top:7px;">
+                @Html.EditorFor(model => model.IsActive)
+                @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" }) @* Thường không cần validate cho checkbox bool *@
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Thêm Mới</button>
+            @Html.ActionLink("Hủy", "Products", null, new { @class = "btn btn-default", style = "margin-left:10px;" })
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval") 
+}

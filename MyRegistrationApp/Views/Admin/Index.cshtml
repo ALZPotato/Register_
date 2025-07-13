@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "Bảng Điều Khiển Admin";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>@ViewBag.Title</h2>
+<p>Chào mừng bạn đến với khu vực quản trị của The Coffee.</p>
+<hr />
+<p>
+    @Html.ActionLink("Quản Lý Phản Hồi Khách Hàng", "Feedbacks", "Admin", null, new { @class = "btn btn-primary" })
+</p>
+@* Thêm các link quản lý khác ở đây *@

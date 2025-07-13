@@ -1,0 +1,25 @@
+﻿/* Content/AdminStyles.css */
+.admin-navbar {
+    /* background-color: #333; Tùy chỉnh nếu muốn khác navbar-inverse */
+}
+
+.admin-main-content-area {
+    background-color: #f9f9f9; /* Nền nhẹ cho phần nội dung chính */
+    padding-bottom: 30px;
+    min-height: calc(100vh - 120px); /* navbar + footer height */
+}
+
+.admin-footer {
+    font-size: 0.9em;
+    color: #777;
+}
+/* Thêm các style khác cho bảng, form nếu cần */
+.table th {
+    background-color: #f0f0f0;
+}
+
+.validation-summary-list ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-bottom: 0;
+}

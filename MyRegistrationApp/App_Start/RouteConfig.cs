@@ -11,7 +11,22 @@ namespace MyRegistrationApp
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
+
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            // Route cho trang sản phẩm với tên danh mục
+            routes.MapRoute(
+                name: "ProductsByCategory",
+                url: "Products/{categoryName}", // URL sẽ là /Products/Ten-Category
+                defaults: new { controller = "Home", action = "Products", categoryName = UrlParameter.Optional }
+            );
+
+            // Route cho trang sản phẩm không có category (hiển thị tất cả)
+            routes.MapRoute(
+                name: "ProductsAll",
+                url: "Products",
+                defaults: new { controller = "Home", action = "Products" }
+            );
 
             routes.MapRoute(
                 name: "Default",

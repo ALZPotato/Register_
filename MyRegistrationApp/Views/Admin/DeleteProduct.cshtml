@@ -1,0 +1,53 @@
+﻿@model MyRegistrationApp.Product
+@{
+    ViewBag.Title = "Xác Nhận Xóa Sản Phẩm";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2><i class="fas fa-trash-alt"></i> @ViewBag.Title</h2>
+<h3 class="text-danger">Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm này?</h3>
+<p class="text-danger"><strong>Lưu ý:</strong> Hành động này không thể hoàn tác và sẽ xóa cả file ảnh liên quan (nếu có).</p>
+<hr />
+
+<div>
+    <h4>Sản phẩm: <strong>"@Html.DisplayFor(model => model.ProductName)"</strong></h4>
+    <br />
+    <dl class="dl-horizontal">
+        <dt>@Html.DisplayNameFor(model => model.ProductID)</dt>
+        <dd>@Html.DisplayFor(model => model.ProductID)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.ProductName)</dt>
+        <dd>@Html.DisplayFor(model => model.ProductName)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Price)</dt>
+        <dd>@string.Format("{0:N0} VNĐ", Model.Price)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.StockQuantity)</dt>
+        <dd>@Html.DisplayFor(model => model.StockQuantity)</dd>
+
+        <dt>Danh mục</dt>
+        <dd>@(Model.Category != null ? Model.Category.CategoryName : "N/A")</dd>
+
+        <dt>Trạng thái</dt>
+        <dd>@(Model.IsActive ? "Kích hoạt" : "Đã ẩn")</dd>
+
+        @if (!string.IsNullOrEmpty(Model.ImageFileName))
+        {
+            <dt>Ảnh Hiện Tại</dt>
+            <dd>
+                <img src="@Url.Content("~/Uploads/ProductImages/" + Model.ImageFileName)" alt="@Model.ProductName" class="img-thumbnail" style="max-width: 200px; margin-top:5px;" />
+                <p><em>@Model.ImageFileName</em></p>
+            </dd>
+        }
+    </dl>
+    <br />
+    @using (Html.BeginForm())
+    {@* Form này sẽ POST đến action DeleteProductConfirmed(int id) *@
+    @Html.AntiForgeryToken()
+    @Html.Hidden("id", Model.ProductID) @* Gửi ID để action biết xóa cái nào *@
+    <div class="form-actions no-color">
+        <button type="submit" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Xóa Vĩnh Viễn</button> |
+        @Html.ActionLink("Hủy và Quay lại Danh sách", "Products", null, new { @class = "btn btn-default" })
+    </div>
+}
+</div>

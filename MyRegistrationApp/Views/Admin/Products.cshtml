@@ -1,0 +1,95 @@
+﻿@model IEnumerable<MyRegistrationApp.Product>
+@{
+    ViewBag.Title = "Quản Lý Sản Phẩm";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; // Hoặc layout bạn đang dùng cho admin
+}
+
+<h2><i class="fas fa-boxes"></i> @ViewBag.Title</h2>
+<hr />
+
+<p style="margin-bottom: 20px;">
+    @Html.ActionLink("Thêm Sản Phẩm Mới", "CreateProduct", null, new { @class = "btn btn-success" }) <i class="fas fa-plus-circle"></i>
+</p>
+
+@* Form tìm kiếm *@
+@using (Html.BeginForm("Products", "Admin", FormMethod.Get, new { @class = "form-inline", style = "margin-bottom: 20px;" }))
+{
+    <div class="form-group">
+        @Html.Label("searchString", "Tìm kiếm:", new { @class = "sr-only" })
+        @Html.TextBox("searchString", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "Nhập tên hoặc danh mục..." })
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Tìm</button>
+    if (!string.IsNullOrEmpty(ViewBag.CurrentFilter as string))
+    {
+        @Html.ActionLink("Xóa Lọc", "Products", null, new { @class = "btn btn-info", style = "margin-left:5px;" })
+    }
+}
+
+<table class="table table-bordered table-hover table-striped">
+    <thead>
+        <tr>
+            <th style="width: 80px; text-align:center;">Ảnh</th>
+            <th>Tên Sản Phẩm</th>
+            <th style="width: 150px; text-align:right;">Giá (VNĐ)</th>
+            <th style="width: 100px; text-align:center;">Tồn Kho</th>
+            <th style="width: 180px;">Danh Mục</th>
+            <th style="width: 100px; text-align:center;">Trạng Thái</th>
+            <th style="width: 120px;">Ngày Tạo</th>
+            <th style="width: 160px; text-align:center;">Hành Động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="8" class="text-center" style="padding:20px;">Không có sản phẩm nào để hiển thị.</td>
+            </tr>
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td style="text-align:center;">
+                    @if (!string.IsNullOrEmpty(item.ImageFileName))
+                    {
+                        <img src="@Url.Content("~/Uploads/ProductImages/" + item.ImageFileName)" alt="@item.ProductName" class="img-thumbnail" style="max-width: 60px; max-height: 60px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        @* Tạo một ảnh placeholder trong Content/Images/placeholder-product.png *@
+                        <img src="@Url.Content("~/Content/Images/placeholder-product.png")" alt="Chưa có ảnh" class="img-thumbnail" style="max-width: 60px; max-height: 60px; object-fit: cover; background-color: #f0f0f0;" />
+                    }
+                </td>
+                <td>
+                    <strong>@Html.ActionLink(item.ProductName, "EditProduct", new { id = item.ProductID }, new { title = "Chỉnh sửa sản phẩm này" })</strong>
+                    @if (!string.IsNullOrEmpty(item.Description)) // Hiển thị một phần mô tả ngắn (tùy chọn)
+                    {
+                        <p class="text-muted small">
+                            @if (item.Description.Length > 100)
+                            {
+                                @Html.Raw(item.Description.Substring(0, 100) + "...")
+                            }
+                            else
+                            {
+                                @Html.Raw(item.Description)
+                            }
+                        </p>
+                    }
+                </td>
+                <td style="text-align:right;">@string.Format("{0:N0}", item.Price)</td>
+                <td style="text-align:center;">@Html.DisplayFor(modelItem => item.StockQuantity)</td>
+                <td>@(item.Category != null ? item.Category.CategoryName : "Chưa phân loại")</td> @* Giả sử Product có navigation property tên là Category *@
+                <td style="text-align:center;">
+                    @if (item.IsActive)
+                    {<span class="label label-success">Kích hoạt</span> }
+                    else
+                    { <span class="label label-danger">Đã ẩn</span>}
+                </td>
+                <td>@item.DateCreated.ToString("dd/MM/yy HH:mm")</td>
+                <td style="text-align:center;">
+                    @Html.ActionLink("Sửa", "EditProduct", new { id = item.ProductID }, new { @class = "btn btn-primary btn-xs btn-action-admin", title = "Sửa" })
+                    @Html.ActionLink("Xóa", "DeleteProduct", new { id = item.ProductID }, new { @class = "btn btn-danger btn-xs btn-action-admin", title = "Xóa" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

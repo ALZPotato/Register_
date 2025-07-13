@@ -1,0 +1,281 @@
+﻿@model MyRegistrationApp.Models.UserOrderViewModel
+@{
+    ViewBag.Title = string.Format("Chi Tiết Đơn Hàng #{0}", Model.OrderID);
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section styles {
+    <style>
+        .order-details-page {
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        .order-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap; /* Cho phép xuống hàng trên mobile */
+        }
+
+            .order-details-header .header-left h2 {
+                font-size: 2.2em;
+                margin: 0;
+                color: #4A3B31;
+            }
+
+            .order-details-header .header-left .order-date {
+                color: #777;
+                font-size: 1.1em;
+            }
+
+            .order-details-header .header-right .status-label {
+                font-size: 1em;
+                padding: 8px 15px;
+                border-radius: 20px; /* Bo tròn như viên thuốc */
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+        /* Style màu cho từng trạng thái */
+        .status-label.status-processing {
+            background-color: #337ab7;
+            color: white;
+        }
+        /* Đang xử lý - Xanh dương */
+        .status-label.status-waiting {
+            background-color: #f0ad4e;
+            color: white;
+        }
+        /* Chờ thanh toán - Vàng */
+        .status-label.status-shipping {
+            background-color: #5bc0de;
+            color: white;
+        }
+        /* Đang giao - Xanh lơ */
+        .status-label.status-completed {
+            background-color: #5cb85c;
+            color: white;
+        }
+        /* Hoàn thành - Xanh lá */
+        .status-label.status-cancelled {
+            background-color: #d9534f;
+            color: white;
+        }
+        /* Đã hủy - Đỏ */
+
+
+        .order-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .order-info-card {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #eae0d1;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+            .order-info-card h4 {
+                margin-top: 0;
+                margin-bottom: 20px;
+                font-size: 1.3em;
+                color: #4A3B31;
+                font-weight: 600;
+            }
+
+                .order-info-card h4 i {
+                    color: #8B5A2B;
+                    margin-right: 10px;
+                }
+
+            .order-info-card p {
+                margin-bottom: 8px;
+                line-height: 1.6;
+            }
+
+                .order-info-card p strong {
+                    color: #555;
+                    min-width: 120px;
+                    display: inline-block;
+                }
+
+        .order-items-card {
+            background-color: #fff;
+            padding: 0; /* Bỏ padding để table chiếm toàn bộ */
+            border-radius: 8px;
+            border: 1px solid #eae0d1;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            overflow: hidden; /* Để bo góc cho table */
+        }
+
+            .order-items-card h4 {
+                padding: 20px 25px;
+                margin: 0;
+                border-bottom: 1px solid #eae0d1;
+            }
+
+        .order-items-table {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+            .order-items-table th {
+                background-color: #fcfaf7;
+                padding: 12px 25px;
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.9em;
+                letter-spacing: 0.5px;
+                color: #665c54;
+                border-bottom: 1px solid #eae0d1;
+            }
+
+            .order-items-table td {
+                padding: 15px 25px;
+                vertical-align: middle;
+                border-top: 1px solid #f0f0f0;
+            }
+
+            .order-items-table .product-info-cell {
+                display: flex;
+                align-items: center;
+            }
+
+            .order-items-table .product-image-in-table {
+                width: 60px;
+                height: 60px;
+                object-fit: cover;
+                margin-right: 15px;
+                border-radius: 4px;
+            }
+
+            .order-items-table .product-name-in-table a {
+                font-weight: 600;
+                color: #333;
+                text-decoration: none;
+            }
+
+                .order-items-table .product-name-in-table a:hover {
+                    color: #8B5A2B;
+                }
+
+            .order-items-table tfoot td {
+                font-weight: bold;
+                font-size: 1.2em;
+                border-top: 2px solid #333;
+            }
+
+        .order-actions-bar {
+            text-align: right;
+            margin-top: 30px;
+        }
+
+            .order-actions-bar .btn {
+                margin-left: 10px;
+            }
+    </style>
+}
+
+<div class="container order-details-page">
+    <div class="order-details-header">
+        <div class="header-left">
+            <h2>Chi Tiết Đơn Hàng #@Model.OrderID</h2>
+            <div class="order-date">
+                <i class="far fa-calendar-alt"></i> Ngày đặt: @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")
+            </div>
+        </div>
+        <div class="header-right">
+            @* Gán class CSS dựa trên trạng thái *@
+            @{
+                string statusClass = "status-processing"; // Mặc định
+                if (Model.Status == "Đã hoàn thành") { statusClass = "status-completed"; }
+                else if (Model.Status == "Đã hủy") { statusClass = "status-cancelled"; }
+                else if (Model.Status == "Đang giao hàng") { statusClass = "status-shipping"; }
+                else if (Model.Status == "Chờ thanh toán") { statusClass = "status-waiting"; }
+            }
+            <span class="status-label @statusClass">@Model.Status</span>
+        </div>
+    </div>
+
+    <div class="order-info-grid">
+        <div class="order-info-card">
+            <h4><i class="fas fa-shipping-fast"></i> Thông Tin Giao Hàng</h4>
+            <p><strong>Người nhận:</strong> @Model.RecipientName</p>
+            <p><strong>Số điện thoại:</strong> @Model.PhoneNumber</p>
+            <p><strong>Địa chỉ:</strong> @Model.ShippingAddress</p>
+            @if (!string.IsNullOrEmpty(Model.Notes))
+            {
+                <p><strong>Ghi chú:</strong> <i>@Model.Notes</i></p>
+            }
+        </div>
+        <div class="order-info-card">
+            <h4><i class="fas fa-file-invoice-dollar"></i> Tóm Tắt Thanh Toán</h4>
+            <p><strong>Phương thức:</strong> @(Model.Status == "Chờ thanh toán" ? "Chuyển khoản VietQR" : "Thanh toán khi nhận hàng (COD)")</p>
+            <p><strong>Tổng tiền hàng:</strong> @string.Format("{0:N0} VNĐ", Model.TotalAmount)</p>
+            <p><strong>Phí vận chuyển:</strong> Miễn phí</p>
+            <p style="font-weight:bold; font-size: 1.2em; color: #4A3B31; border-top: 1px solid #eee; padding-top: 10px;">
+                <strong>Tổng cộng:</strong> @string.Format("{0:N0} VNĐ", Model.TotalAmount)
+            </p>
+        </div>
+    </div>
+
+    <div class="order-items-card">
+        <h4><i class="fas fa-box-open"></i> Các sản phẩm đã đặt</h4>
+        <table class="table order-items-table">
+            <thead>
+                <tr>
+                    <th>Sản Phẩm</th>
+                    <th class="text-center">Số Lượng</th>
+                    <th class="text-right">Đơn Giá</th>
+                    <th class="text-right">Thành Tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>
+                            <div class="product-info-cell">
+                                @if (!string.IsNullOrEmpty(item.ProductImageFileName))
+                                {
+                                    <img src="@Url.Content("~/Uploads/ProductImages/" + item.ProductImageFileName)" class="product-image-in-table" />
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Content/Images/placeholder-product.png")" class="product-image-in-table" />
+                                }
+                                <div class="product-name-in-table">
+                                    @Html.ActionLink(item.ProductName, "ProductDetail", "Home", new { id = item.ProductID }, null)
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-center">@item.Quantity</td>
+                        <td class="text-right">@string.Format("{0:N0}", item.Price)</td>
+                        <td class="text-right">@string.Format("{0:N0}", item.Total)</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-right">TỔNG CỘNG</td>
+                    <td class="text-right">@string.Format("{0:N0} VNĐ", Model.TotalAmount)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="order-actions-bar">
+        @if (Model.Status == "Chờ thanh toán")
+        {
+            <a href="@Url.Action("PaymentInstructions", "Order", new { id = Model.OrderID })" class="btn btn-success">
+                <i class="fas fa-qrcode"></i> Thanh toán lại
+            </a>
+        }
+        @Html.ActionLink("Quay lại Lịch sử đơn hàng", "History", "Order", null, new { @class = "btn btn-default" })
+    </div>
+</div>

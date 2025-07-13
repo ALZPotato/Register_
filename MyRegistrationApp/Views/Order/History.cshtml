@@ -1,0 +1,170 @@
+﻿@model IEnumerable<MyRegistrationApp.Order> 
+
+@{
+    ViewBag.Title = "Lịch Sử Đơn Hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <style>
+        .order-history-page {
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        .order-history-header h2 {
+            font-size: 2.2em;
+            color: #4A3B31;
+        }
+
+        /* Tùy chỉnh cho bảng lịch sử đơn hàng */
+        .history-table {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px; /* Bo góc nhẹ cho toàn bộ bảng */
+            overflow: hidden; /* Để bo góc có hiệu lực */
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+
+            .history-table thead th {
+                background-color: #f8f8f8; /* Nền xám rất nhạt cho header */
+                color: #4A3B31;
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.9em;
+                letter-spacing: 0.5px;
+                border-bottom-width: 2px;
+                border-color: #ddd !important;
+            }
+
+            .history-table tbody td {
+                vertical-align: middle !important;
+                padding: 15px 12px;
+            }
+
+            .history-table tbody tr:hover {
+                background-color: #fdfaf6; /* Màu kem khi hover qua một dòng */
+            }
+
+            .history-table .order-id-column {
+                font-weight: bold;
+                color: #337ab7; /* Màu xanh dương cho mã đơn hàng */
+            }
+
+            .history-table .status-label { /* Style cho nhãn trạng thái */
+                font-size: 0.85em;
+                padding: .3em .7em;
+                border-radius: 4px;
+                font-weight: 600;
+            }
+        /* Style màu cho từng trạng thái (giống như trước) */
+        .status-label.status-processing {
+            background-color: #337ab7;
+            color: white;
+        }
+
+        .status-label.status-waiting {
+            background-color: #f0ad4e;
+            color: white;
+        }
+
+        .status-label.status-shipping {
+            background-color: #5bc0de;
+            color: white;
+        }
+
+        .status-label.status-completed {
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        .status-label.status-cancelled {
+            background-color: #d9534f;
+            color: white;
+        }
+
+        .history-table .actions-column .btn {
+            margin-bottom: 5px; /* Nếu các nút xuống dòng trên mobile */
+        }
+
+        /* Dành cho trường hợp không có đơn hàng */
+        .no-orders-message {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+            .no-orders-message i {
+                font-size: 4em;
+                color: #ccc;
+                margin-bottom: 20px;
+            }
+    </style>
+}
+
+<div class="container order-history-page">
+    <div class="order-history-header">
+        <h2><i class="fas fa-history"></i> @ViewBag.Title</h2>
+        <p class="lead">Theo dõi tất cả các đơn hàng bạn đã đặt tại The Coffee.</p>
+    </div>
+    <hr />
+
+    @if (!Model.Any())
+    {
+        <div class="no-orders-message">
+            <i class="fas fa-box-open"></i>
+            <h3>Bạn chưa có đơn hàng nào</h3>
+            <p>@Html.ActionLink("Bắt đầu mua sắm ngay!", "Products", "Home", null, new { @class = "btn btn-primary" })</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover history-table">
+                <thead>
+                    <tr>
+                        <th>Mã Đơn Hàng</th>
+                        <th>Ngày Đặt</th>
+                        <th class="text-right">Tổng Tiền</th>
+                        <th class="text-center">Trạng Thái</th>
+                        <th class="text-right" style="width: 220px;">Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td class="order-id-column">#@order.OrderID</td>
+                            <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="text-right"><strong>@string.Format("{0:N0} VNĐ", order.TotalAmount)</strong></td>
+                            <td class="text-center">
+                                @{
+                                    string statusClass = "status-processing"; // Mặc định
+                                    if (order.Status == "Đã hoàn thành") { statusClass = "status-completed"; }
+                                    else if (order.Status == "Đã hủy") { statusClass = "status-cancelled"; }
+                                    else if (order.Status == "Đang giao hàng") { statusClass = "status-shipping"; }
+                                    else if (order.Status == "Chờ thanh toán") { statusClass = "status-waiting"; }
+                                }
+                                <span class="status-label @statusClass">@order.Status</span>
+                            </td>
+                            <td class="text-right actions-column">
+                                @if (order.Status == "Chờ thanh toán")
+                                {
+                                    <a href="@Url.Action("PaymentInstructions", "Order", new { id = order.OrderID })" class="btn btn-success btn-xs">
+                                        <i class="fas fa-qrcode"></i> Thanh toán
+                                    </a>
+                                }
+                                <a href="@Url.Action("Details", "Order", new { id = order.OrderID })" class="btn btn-info btn-xs">
+                                    <i class="fas fa-eye"></i> Xem chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@section scripts {
+    @* Không cần script riêng cho trang này *@
+}

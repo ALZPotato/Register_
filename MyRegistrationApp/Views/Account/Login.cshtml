@@ -1,8 +1,8 @@
-﻿@model MyRegistrationApp.Models.RegisterViewModel
+﻿@model MyRegistrationApp.Models.LoginViewModel
 
 @{
-    ViewBag.Title = "Tham Gia The Coffee";
-    Layout = null;
+    ViewBag.Title = "Đăng Nhập The Coffee"; // Thay đổi tiêu đề cho phù hợp
+    Layout = null; // Quan trọng: Không sử dụng layout chung
 }
 
 <!DOCTYPE html>
@@ -26,17 +26,17 @@
             line-height: 1.6;
         }
 
-        .register-container {
+        .login-container { /* Đổi tên class cho phù hợp */
             background-color: #ffffff;
             padding: 40px;
             border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 450px;
+            max-width: 420px; /* Có thể nhỏ hơn trang đăng ký một chút */
             text-align: center;
         }
 
-            .register-container h2 {
+            .login-container h2 {
                 font-family: 'Merriweather', serif;
                 color: #4a3b31; /* Màu nâu cà phê đậm */
                 margin-top: 0;
@@ -44,7 +44,7 @@
                 font-size: 28px;
             }
 
-            .register-container p.subtitle {
+            .login-container p.subtitle {
                 color: #777;
                 margin-bottom: 30px;
                 font-size: 1em;
@@ -79,6 +79,25 @@
                 box-shadow: 0 0 0 2px rgba(74, 59, 49, 0.1);
             }
 
+        .checkbox-group { /* Style cho checkbox "Ghi nhớ đăng nhập" */
+            text-align: left;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+            .checkbox-group label {
+                font-weight: normal;
+                color: #555;
+                margin-left: 5px;
+                cursor: pointer;
+            }
+
+            .checkbox-group input[type="checkbox"] {
+                vertical-align: middle;
+                margin-right: 5px;
+            }
+
+
         .btn-submit {
             background-color: #4a3b31; /* Màu nâu cà phê đậm */
             color: white;
@@ -105,10 +124,39 @@
             margin-top: 5px;
         }
 
-        .validation-summary-errors {
+        .validation-summary-errors { /* Class này thường được MVC dùng cho summary chung */
             margin-bottom: 15px;
             text-align: left;
+            background-color: #f2dede; /* Nền hồng nhạt cho summary lỗi */
+            border: 1px solid #ebccd1;
+            padding: 10px 15px;
+            border-radius: 4px;
         }
+
+            .validation-summary-errors ul {
+                margin-bottom: 0;
+            }
+
+
+        .extra-links { /* Cho link "Quên mật khẩu" và "Đăng ký" */
+            margin-top: 25px;
+            font-size: 0.9em;
+        }
+
+            .extra-links a {
+                color: #8c6e5a; /* Màu nâu cà phê nhạt */
+                text-decoration: none;
+            }
+
+                .extra-links a:hover {
+                    text-decoration: underline;
+                    color: #4a3b31;
+                }
+
+            .extra-links .separator {
+                margin: 0 10px;
+                color: #ccc;
+            }
 
         /* Simple coffee bean icon (optional, can use FontAwesome or SVG for better ones) */
         .coffee-icon::before {
@@ -120,18 +168,21 @@
     </style>
 </head>
 <body>
-    <div class="register-container">
+    <div class="login-container">
         <h2><span class="coffee-icon"></span>@ViewBag.Title</h2>
-        <p class="subtitle">Tạo tài khoản để khám phá hương vị cà phê độc đáo của chúng tôi.</p>
+        <p class="subtitle">Chào mừng trở lại! Đăng nhập để tiếp tục hành trình cà phê của bạn.</p>
 
-        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
         {
             @Html.AntiForgeryToken()
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" }) @* Thông báo lỗi chung, có thể ẩn nếu không cần thiết khi có lỗi field *@
+            @* Nếu bạn muốn ValidationSummary hiển thị rõ ràng hơn với style đã thêm: *@
+            @* @Html.ValidationSummary(false, "Vui lòng sửa các lỗi sau:", new { @class = "validation-summary-errors" }) *@
+
 
             <div class="form-group">
                 @Html.LabelFor(m => m.Username, "Tên đăng nhập")
-                @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Nhập tên đăng nhập" })
+                @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Nhập tên đăng nhập của bạn" })
                 @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
             </div>
 
@@ -141,26 +192,19 @@
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
             </div>
 
-            <div class="form-group">
-                @Html.LabelFor(m => m.ConfirmPassword, "Xác nhận mật khẩu")
-                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Nhập lại mật khẩu" })
-                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+            <div class="form-group checkbox-group">
+                @Html.CheckBoxFor(m => m.RememberMe)
+                @Html.LabelFor(m => m.RememberMe, "Ghi nhớ đăng nhập")
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(m => m.FullName, "Họ và tên")
-                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Nhập họ và tên của bạn" })
-                @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+                <input type="submit" value="Đăng Nhập" class="btn-submit" />
             </div>
 
-            <div class="form-group">
-                @Html.LabelFor(m => m.Business, "Chuyên ngành của bạn")
-                @Html.DropDownListFor(m => m.Business, Model.MajorOptions, "-- Chọn chuyên ngành --", new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.Business, "", new { @class = "text-danger" })
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Đăng Ký Ngay" class="btn-submit" />
+            <div class="extra-links">
+                @Html.ActionLink("Quên mật khẩu?", "ForgotPassword", "Account") @* Bạn sẽ cần tạo action ForgotPassword sau *@
+                <span class="separator">|</span>
+                @Html.ActionLink("Chưa có tài khoản? Đăng ký ngay!", "Register", "Account")
             </div>
         }
     </div>

@@ -1,0 +1,342 @@
+﻿@model MyRegistrationApp.Models.OrderViewModel
+@{
+    ViewBag.Title = "Thông Tin Đặt Hàng & Thanh Toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section styles {
+    <style>
+        .checkout-page-container {
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+
+        .checkout-form-section, .order-summary-section {
+            background-color: #fff;
+            padding: 30px;
+            border: 1px solid #eae0d1;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            height: 100%; 
+        }
+
+            .checkout-form-section h4, .order-summary-section h4 {
+                margin-top: 0;
+                font-size: 1.5em;
+                font-family: 'Playfair Display', serif;
+                color: #4A3B31;
+                border-bottom: 2px solid #8B5A2B;
+                padding-bottom: 10px;
+                margin-bottom: 25px;
+            }
+
+                .checkout-form-section h4 i, .order-summary-section h4 i {
+                    margin-right: 10px;
+                }
+
+            /* --- TÙY CHỈNH FORM NHẬP THÔNG TIN --- */
+            .checkout-form-section .form-group {
+                margin-bottom: 22px;
+            }
+
+                .checkout-form-section .form-group label.control-label { /* Style cho label nếu bạn dùng form-horizontal */
+                    font-weight: 600;
+                    font-size: 1em;
+                    color: #4A3B31;
+                    text-align: left !important; /* Ghi đè text-align:right của Bootstrap */
+                    padding-top: 7px; /* Căn chỉnh với input */
+                }
+
+                .checkout-form-section .form-group label:not(.control-label) { /* Style cho label nếu không dùng form-horizontal */
+                    font-weight: 600;
+                    font-size: 0.9em;
+                    color: #665c54;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    margin-bottom: 8px;
+                }
+
+
+            .checkout-form-section .form-control {
+                border: 1px solid #dcd3c9;
+                border-radius: 4px;
+                padding: 10px 15px;
+                height: 44px;
+                box-shadow: none;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            }
+
+                .checkout-form-section .form-control:focus {
+                    border-color: #8B5A2B;
+                    box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.15);
+                }
+
+            .checkout-form-section textarea.form-control {
+                height: auto;
+                min-height: 100px;
+            }
+
+
+            /* --- TÙY CHỈNH BẢNG TÓM TẮT ĐƠN HÀNG --- */
+            .order-summary-section .order-items-table {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+                .order-summary-section .order-items-table td {
+                    padding: 15px 0;
+                    vertical-align: middle;
+                    border-top: 1px solid #f0f0f0;
+                }
+
+            .order-summary-section .order-item-name {
+                color: #333;
+                font-weight: 600;
+            }
+
+            .order-summary-section .order-item-quantity {
+                color: #777;
+                font-size: 0.9em;
+            }
+
+            .order-summary-section .order-item-price {
+                text-align: right;
+                font-weight: 600;
+                color: #4A3B31;
+            }
+
+            .order-summary-section .summary-calculation .summary-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 10px;
+            }
+
+            .order-summary-section .summary-total {
+                font-weight: bold;
+                font-size: 1.4em;
+                padding-top: 15px;
+                margin-top: 10px;
+                border-top: 2px solid #4A3B31;
+                display: flex;
+                justify-content: space-between;
+            }
+
+        /* --- TÙY CHỈNH PHẦN CHỌN PHƯƠNG THỨC THANH TOÁN --- */
+        .payment-methods {
+            margin-top: 20px;
+        }
+
+        .payment-method-option {
+            border: 1px solid #dcd3c9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .payment-method-option:hover {
+                border-color: #bca897;
+            }
+
+            .payment-method-option.selected {
+                border-color: #8B5A2B;
+                box-shadow: 0 0 0 2px rgba(139, 90, 43, 0.15);
+                background-color: #fdfaf6;
+            }
+
+            .payment-method-option label {
+                display: flex;
+                align-items: center;
+                width: 100%;
+                font-weight: 600;
+                font-size: 1.1em;
+                margin-bottom: 0;
+                cursor: pointer;
+            }
+
+            .payment-method-option input[type="radio"] {
+                margin-right: 15px;
+                transform: scale(1.3); /* Làm nút radio to hơn chút */
+            }
+
+            .payment-method-option .payment-description {
+                font-weight: normal;
+                font-size: 0.9em;
+                color: #777;
+                padding-left: 30px; /* Thụt vào so với label chính */
+                margin-top: 5px;
+            }
+
+        /* Nút Hoàn tất Đặt hàng */
+        .btn-place-order {
+            background-color: #8B5A2B;
+            color: white !important;
+            border: none;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            width: 100%;
+            border-radius: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 20px;
+        }
+
+            .btn-place-order:hover {
+                background-color: #7A4D22;
+                transform: translateY(-2px);
+            }
+
+            .btn-place-order:disabled {
+                background-color: #ccc;
+                cursor: not-allowed;
+                transform: none;
+            }
+    </style>
+}
+
+<div class="container checkout-page-container">
+
+    <hr />
+
+    <div class="row">
+        @using (Html.BeginForm("PlaceOrder", "Order", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            @* Cột bên trái: Form nhập thông tin và phương thức thanh toán *@
+            <div class="col-md-7">
+                <div class="checkout-form-section">
+                    <h4><i class="fas fa-map-marker-alt"></i> Thông tin giao hàng</h4>
+
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState.Keys.Any(k => k != "PaymentMethod"))
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Vui lòng điền đầy đủ thông tin giao hàng:</strong>
+                            @Html.ValidationSummary(true, "") @* true để chỉ hiện lỗi model-level, vì các lỗi field đã có ValidationMessageFor *@
+                        </div>
+                    }
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FullName)
+                        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Ví dụ: Nguyễn Văn An" })
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.PhoneNumber)
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Dùng để liên hệ khi giao hàng" })
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Address)
+                        @Html.TextBoxFor(m => m.Address, new { @class = "form-control", placeholder = "Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành" })
+                        @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Email)
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "vidu@email.com" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Notes)
+                        @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", rows = 3, placeholder = "Ví dụ: Giao hàng giờ hành chính..." })
+                        @Html.ValidationMessageFor(m => m.Notes, "", new { @class = "text-danger" })
+                    </div>
+
+                    <hr />
+                    <h4><i class="fas fa-credit-card"></i> Phương thức thanh toán</h4>
+                    @Html.ValidationMessageFor(m => m.PaymentMethod, "", new { @class = "text-danger" })
+                    <div class="payment-methods">
+                        <div class="payment-method-option">
+                            <label for="paymentCOD">
+                                @Html.RadioButtonFor(m => m.PaymentMethod, "COD", new { id = "paymentCOD", @checked = "checked" })
+                                <span><i class="fas fa-money-bill-wave"></i> Thanh toán khi nhận hàng (COD)</span>
+                            </label>
+                            <p class="payment-description">Bạn sẽ thanh toán tiền mặt trực tiếp cho nhân viên giao hàng khi nhận được sản phẩm.</p>
+                        </div>
+                        <div class="payment-method-option">
+                            <label for="paymentVietQR">
+                                @Html.RadioButtonFor(m => m.PaymentMethod, "VietQR", new { id = "paymentVietQR" })
+                                <span><i class="fas fa-qrcode"></i> Thanh toán bằng quét mã VietQR</span>
+                            </label>
+                            <p class="payment-description">Sử dụng ứng dụng ngân hàng bất kỳ để quét mã QR. Đơn hàng sẽ được xử lý sau khi chúng tôi xác nhận giao dịch.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Cột bên phải: Tóm tắt đơn hàng và nút đặt hàng *@
+            <div class="col-md-5">
+                <div class="order-summary-section">
+                    <h4><i class="fas fa-receipt"></i> Đơn hàng của bạn</h4>
+                    @if (Model != null && Model.Cart != null && Model.Cart.CartItems.Any())
+                    {
+                        <table class="order-items-table">
+                            <tbody>
+                                @foreach (var item in Model.Cart.CartItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="order-item-name">@item.Product.ProductName</div>
+                                            <div class="order-item-quantity">Số lượng: @item.Quantity</div>
+                                        </td>
+                                        <td class="order-item-price">@string.Format("{0:N0}", item.Product.Price * item.Quantity)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <div class="summary-calculation">
+                            <div class="summary-row">
+                                <span>Tạm tính</span>
+                                <span>@string.Format("{0:N0} VNĐ", Model.Cart.TotalPrice)</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Phí vận chuyển</span>
+                                <span>Miễn phí</span> @* Hoặc tính toán sau *@
+                            </div>
+                        </div>
+
+                        <div class="summary-total">
+                            <span>Tổng Cộng</span>
+                            <span>@string.Format("{0:N0} VNĐ", Model.Cart.TotalPrice)</span>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <p class="text-muted small">Bằng cách nhấn "Hoàn Tất Đặt Hàng", bạn đồng ý với các <a href="#">Điều khoản và Điều kiện</a> của The Coffee.</p>
+                            <button type="submit" class="btn-place-order" @(Model.Cart.CartItems.Any() ? "" : "disabled")>
+                                Hoàn Tất Đặt Hàng
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <p>Không có sản phẩm nào trong giỏ hàng để thanh toán.</p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        // Thêm hiệu ứng UI cho việc chọn phương thức thanh toán
+        $(document).ready(function () {
+            // Hàm để cập nhật class 'selected'
+            function updatePaymentSelection() {
+                $('.payment-method-option').removeClass('selected');
+                $('input[name="PaymentMethod"]:checked').closest('.payment-method-option').addClass('selected');
+            }
+            // Cập nhật khi trang tải
+            updatePaymentSelection();
+            // Cập nhật khi người dùng thay đổi lựa chọn
+            $('input[name="PaymentMethod"]').on('change', function () {
+                updatePaymentSelection();
+            });
+        });
+    </script>
+}

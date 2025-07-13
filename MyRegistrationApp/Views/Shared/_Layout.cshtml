@@ -3,37 +3,141 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <title>@ViewBag.Title - The Coffee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+          integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+
+    @RenderSection("styles", required: false) 
 </head>
 <body>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+    <!-- Header -->
+    <header class="site-header">
         <div class="container">
-            @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+            <div class="site-logo">
+                @Html.ActionLink("The Coffee", "Index", "Home", new { area = "" }, null)
+            </div>
+            <nav class="main-navigation">
+                <ul>
+                    @{
+                        var currentAction = ViewContext.RouteData.Values["action"].ToString();
+                        var currentController = ViewContext.RouteData.Values["controller"].ToString();
+                    }
+                    <li class="@(currentAction == "Index" && currentController == "Home" ? "active" : "")"><a href="@Url.Action("Index", "Home")">Trang Chủ</a></li>
+                    <li class="@(currentAction == "Products" && currentController == "Home" ? "active" : "")"><a href="@Url.Action("Products", "Home")">Sản Phẩm</a></li>
+
+                    <li>
+                        <a href="@Url.Action("History", "Order")" class="auth-link-item" title="Xem lịch sử đơn hàng của bạn">
+                            <i class="fas fa-history"></i>
+                            <span class="auth-link-text">Lịch sử</span>
+                        </a>
+                    </li>
+                    <li class="@( (currentAction == "ContactFeedback" || currentAction == "Contact") && currentController == "Home" ? "active" : "")">
+                        <a href="@Url.Action("ContactFeedback", "Home")">Liên Hệ & Phản Hồi</a>
+                    </li>
                 </ul>
+            </nav>
+            <div class="auth-links">
+                @if (Request.IsAuthenticated)
+                {
+                    <span class="welcome-message">Xin chào, @User.Identity.Name!</span>
+                    if (User.IsInRole("Admin"))
+                    {
+                        <a href="@Url.Action("Index", "Admin")" class="auth-link-item admin-link" title="Truy cập trang quản trị">
+                            <i class="fas fa-user-shield"></i>
+                            <span class="auth-link-text">Quản lý</span>
+                        </a>
+                    }
+
+                    using (Html.BeginForm("LogOut", "Account", FormMethod.Post, new { id = "logoutFormLayout", @style = "display:inline-block; margin-bottom: 0;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <a href="javascript:document.getElementById('logoutFormLayout').submit()" class="auth-link-item logout-link" title="Đăng xuất">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="auth-link-text">Đăng xuất</span>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <a href="@Url.Action("Login", "Account")">Đăng nhập</a>
+                    <a href="@Url.Action("Register", "Account")" class="btn-register">Đăng ký</a>
+
+                }
+            </div>
+            <a href="@Url.Action("Index", "Cart")" class="cart-summary-link">
+                @{ Html.RenderAction("CartSummary", "Cart"); }
+            </a>
+        </div>
+    </header>
+
+    @RenderBody() 
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-widget">
+                    <h4>The Coffee</h4>
+                    <p>Địa chỉ: 123 Đường Cà Phê, Q. Hạt Ngon, TP.HCM</p>
+                    <p><i class="fas fa-phone-alt"></i> (028) 3812 3456</p>
+                    <p><i class="fas fa-envelope"></i> info@thecoffee.com.vn</p>
+                    <div class="social-icons footer-social-icons">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="footer-widget">
+                    <h4>Liên Kết Nhanh</h4>
+                    <ul>
+                        <li><a href="@Url.Action("About", "Home")">Về Chúng Tôi</a></li>
+                        <li><a href="@Url.Action("Products", "Home")">Sản Phẩm</a></li>
+                        <li><a href="@Url.Action("Blog", "Home")">Blog Cà Phê</a></li>
+                        <li><a href="#">Chính Sách Bảo Mật</a></li>
+                        <li><a href="#">Điều Khoản Dịch Vụ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-widget">
+                    <h4>Hỗ Trợ Khách Hàng</h4>
+                    <ul>
+                        <li><a href="#">Câu Hỏi Thường Gặp (FAQs)</a></li>
+                        <li><a href="#">Hướng Dẫn Mua Hàng</a></li>
+                        <li><a href="#">Chính Sách Đổi Trả</a></li>
+                        <li><a href="@Url.Action("ContactFeedback", "Home")">Liên Hệ Hỗ Trợ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-widget">
+                    <h4>Giờ Mở Cửa</h4>
+                    <p><i class="far fa-clock"></i> Thứ 2 - Thứ 6: 8:00 AM - 9:00 PM</p>
+                    <p><i class="far fa-clock"></i> Thứ 7 - Chủ Nhật: 9:00 AM - 10:00 PM</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© @DateTime.Now.Year The Coffee. All Rights Reserved.</p>
             </div>
         </div>
-    </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+    </footer>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var header = $(".site-header");
+            $(window).scroll(function () {
+                var scroll = $(window).scrollTop();
+                if (scroll >= 50) { 
+                    header.addClass("navbar-scrolled");
+                } else {
+                    header.removeClass("navbar-scrolled");
+                }
+            });
+
+        });
+    </script>
+
     @RenderSection("scripts", required: false)
 </body>
 </html>

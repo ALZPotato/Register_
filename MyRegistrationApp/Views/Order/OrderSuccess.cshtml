@@ -1,0 +1,29 @@
+﻿@model MyRegistrationApp.Order 
+@{
+    ViewBag.Title = "Đặt Hàng Thành Công!";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container text-center" style="margin: 40px auto; max-width: 700px;">
+    <h1 style="color: #28a745; font-size: 5em;"><i class="fas fa-check-circle"></i></h1>
+    <h2>@ViewBag.Title</h2>
+    <p class="lead">Cảm ơn bạn đã đặt hàng tại The Coffee! Đơn hàng của bạn đã được nhận và đang được xử lý.</p>
+    <hr />
+
+    <div class="panel panel-default" style="text-align: left;">
+        <div class="panel-heading">
+            <h3 class="panel-title">Thông tin đơn hàng</h3>
+        </div>
+        <div class="panel-body">
+            <p><strong>Mã đơn hàng:</strong> DH@(Model.OrderID)</p>
+            <p><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+            <p><strong>Tổng tiền:</strong> @string.Format("{0:N0} VNĐ", Model.TotalAmount)</p>
+            <p><strong>Giao đến:</strong> @Model.ShippingAddress</p>
+            <p><strong>Người nhận:</strong> @Model.RecipientName - @Model.PhoneNumber</p>
+            <p><em>Chúng tôi sẽ liên hệ với bạn để xác nhận đơn hàng trong thời gian sớm nhất.</em></p>
+        </div>
+    </div>
+
+    <br />
+    @Html.ActionLink("Tiếp tục mua sắm", "Products", "Home", null, new { @class = "btn btn-primary" })
+</div>
