@@ -23,16 +23,24 @@ namespace MyRegistrationApp.Controllers
         }
         public ActionResult Index()
         {
-            ViewBag.PageTitle = "The Coffee - Hương Vị Đam Mê"; 
-            ViewBag.HeroTitle = "Khơi Nguồn Cảm Hứng Mỗi Sáng";
-            ViewBag.HeroSubtitle = "Khám phá thế giới cà phê đặc biệt và những dụng cụ pha chế hoàn hảo được tuyển chọn bởi The Coffee.";
-            return View();
+            var viewModel = new HomeViewModel();
+
+            viewModel.FeaturedProducts = _db.Products 
+                                            .Where(p => p.IsActive)
+                                            .OrderByDescending(p => p.DateCreated)
+                                            .Take(3)
+                                            .ToList();
+
+            ViewBag.PageTitle = "Trang Chủ - The Coffee";
+            ViewBag.HeroTitle = "Khám Phá Hương Vị Cà Phê Đích Thực";
+
+            return View(viewModel); 
         }
         public ActionResult About() // Trang giới thiệu về The Coffee
         {
             ViewBag.Title = "Về The Coffee";
             ViewBag.Message = "Tìm hiểu thêm về câu chuyện và sứ mệnh của chúng tôi.";
-            return View(); // Bạn sẽ cần tạo view About.cshtml
+            return View(); 
         }
 
         // GET: Home/Contact
@@ -46,13 +54,13 @@ namespace MyRegistrationApp.Controllers
             var viewModel = new ProductsViewModel();
             string connectionString = ConfigurationManager.ConnectionStrings["MyWebAppDBConnectionString"].ConnectionString;
 
-            using (UserDataDataContext db = new UserDataDataContext(connectionString)) // THAY THẾ UserDataDataContext
+            using (UserDataDataContext db = new UserDataDataContext(connectionString))
             {
                 // 1. Lấy tất cả danh mục để hiển thị menu
-                viewModel.Categories = db.Categories.OrderBy(c => c.CategoryName).ToList(); // THAY THẾ Categories và Category
+                viewModel.Categories = db.Categories.OrderBy(c => c.CategoryName).ToList(); 
 
                 // 2. Bắt đầu truy vấn lấy sản phẩm, chỉ lấy sản phẩm đang kích hoạt
-                IQueryable<Product> productsQuery = db.Products.Where(p => p.IsActive); // THAY THẾ Products và Product
+                IQueryable<Product> productsQuery = db.Products.Where(p => p.IsActive); 
 
                 if (!string.IsNullOrEmpty(categoryName))
                 {
@@ -275,7 +283,7 @@ namespace MyRegistrationApp.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Yêu cầu ID sản phẩm.");
             }
 
-            Product product = _db.Products.FirstOrDefault(p => p.ProductID == id && p.IsActive); // THAY THẾ Product và Products
+            Product product = _db.Products.FirstOrDefault(p => p.ProductID == id && p.IsActive); 
 
             if (product == null)
             {
@@ -286,7 +294,6 @@ namespace MyRegistrationApp.Controllers
             return View(product); // Truyền đối tượng Product (LINQ to SQL) trực tiếp vào View
         }
 
-        // ... (các action khác và phương thức Dispose)
         protected override void Dispose(bool disposing)
         {
             if (disposing)

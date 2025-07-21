@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
 
-namespace MyRegistrationApp.Models // THAY THẾ MyRegistrationApp bằng namespace của project bạn
+namespace MyRegistrationApp.Models
 {
     public class ProductViewModel
     {

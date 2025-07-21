@@ -122,6 +122,7 @@
     <Compile Include="Models\CartItem.cs" />
     <Compile Include="Models\CartViewModel.cs" />
     <Compile Include="Models\FeedbackViewModel.cs" />
+    <Compile Include="Models\HomeViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\OrderDetailViewModel.cs" />
     <Compile Include="Models\OrderViewModel.cs" />

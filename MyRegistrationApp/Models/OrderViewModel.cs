@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using MyRegistrationApp.Models; // Namespace chứa CartViewModel
+using MyRegistrationApp.Models; 
 
 namespace MyRegistrationApp.Models
 {

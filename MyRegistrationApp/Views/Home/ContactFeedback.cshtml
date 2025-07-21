@@ -5,196 +5,206 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>@ViewBag.Title - The Coffee</title>
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <style>
-            .container-feedback {
-                background-color: #fff;
-                padding: 30px 40px;
-                border-radius: 8px;
-                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-                width: 100%;
-                max-width: 700px;
-                margin: 20px auto;
-            }
+@section styles {
+    <style>
+        .feedback-page-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px 15px;
+        }
 
-            .feedback-header h2 {
-                font-family: 'Playfair Display', serif;
-                text-align: center;
-                color: #4A3B31;
-                font-size: 2.2em;
-                margin-bottom: 10px;
-            }
+        .container-feedback {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 700px;
+            border: 1px solid #eae0d1;
+        }
 
-            .feedback-header p {
-                text-align: center;
-                color: #777;
-                margin-bottom: 30px;
-            }
+        .feedback-header h2 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            color: #4A3B31;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
 
-            .form-group {
-                margin-bottom: 20px;
-            }
+        .feedback-header p {
+            text-align: center;
+            color: #777;
+            margin-bottom: 30px;
+        }
 
-                .form-group label {
-                    display: block;
-                    font-weight: 600;
-                    margin-bottom: 7px;
-                    font-size: 0.95em;
-                }
+        .feedback-form .form-group {
+            margin-bottom: 20px;
+        }
 
-            .form-control, .form-control-select, input[type="file"].form-control-file /* Áp dụng cho cả input file */ {
-                width: 100%;
-                padding: 10px 12px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                box-sizing: border-box;
-                font-size: 1em;
-                font-family: 'Roboto', sans-serif;
-                transition: border-color 0.3s ease;
-            }
-
-            input[type="file"].form-control-file {
-                line-height: 1.5; /* Căn chỉnh text bên trong nút choose file */
-            }
-
-            .form-control-select {
-                appearance: none;
-                background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236c757d%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
-                background-repeat: no-repeat;
-                background-position: right 10px top 50%;
-                background-size: .65em auto;
-                padding-right: 30px;
-            }
-
-                .form-control:focus, .form-control-select:focus, input[type="file"].form-control-file:focus {
-                    border-color: #8B5A2B;
-                    outline: none;
-                    box-shadow: 0 0 0 2px rgba(139, 90, 43, 0.15);
-                }
-
-            textarea.form-control {
-                min-height: 120px;
-                resize: vertical;
-            }
-
-            .checkbox-group label {
-                font-weight: normal;
-                margin-left: 5px;
-                cursor: pointer;
-            }
-
-            .checkbox-group input[type="checkbox"] {
-                vertical-align: middle;
-            }
-
-            .btn-submit-feedback {
-                background-color: #8B5A2B;
-                color: white;
-                padding: 12px 25px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                font-size: 1.1em;
+            .feedback-form .form-group label {
+                display: block;
                 font-weight: 600;
-                width: 100%;
-                transition: background-color 0.3s ease;
-                margin-top: 10px;
+                margin-bottom: 7px;
+                font-size: 0.95em;
             }
 
-                .btn-submit-feedback:hover {
-                    background-color: #7A4D22;
-                }
+        .feedback-form .form-control,
+        .feedback-form .form-control-select,
+        .feedback-form input[type="file"].form-control-file {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
 
-            .text-danger {
-                color: #d9534f;
-                font-size: 0.9em;
+        .feedback-form input[type="file"].form-control-file {
+            line-height: 1.5;
+            padding: 5px 10px; /* Điều chỉnh padding cho input file */
+        }
+
+        .feedback-form .form-control-select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%236c757d%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: .65em auto;
+            padding-right: 30px;
+        }
+
+            .feedback-form .form-control:focus,
+            .feedback-form .form-control-select:focus {
+                border-color: #8B5A2B;
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.15);
             }
 
-            .success-message {
-                background-color: #dff0d8;
-                color: #3c763d;
-                border: 1px solid #d6e9c6;
-                padding: 15px;
-                margin-bottom: 20px;
-                border-radius: 4px;
-                text-align: center;
+        .feedback-form textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .feedback-form .checkbox-group label {
+            font-weight: normal;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+
+        .feedback-form .checkbox-group input[type="checkbox"] {
+            vertical-align: middle;
+        }
+
+        .feedback-form .btn-submit-feedback {
+            background-color: #8B5A2B;
+            color: white !important;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+            .feedback-form .btn-submit-feedback:hover {
+                background-color: #7A4D22;
             }
-        </style>
-    </head>
-    <body>
-        <div class="container-feedback">
-            <div class="feedback-header">
-                <h2><i class="fas fa-comments" style="margin-right:10px;"></i>@ViewBag.Title</h2>
-                <p>Chúng tôi luôn lắng nghe ý kiến của bạn để cải thiện sản phẩm và dịch vụ.</p>
+
+        .text-danger {
+            color: #d9534f;
+            font-size: 0.9em;
+        }
+
+        .success-message {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+    </style>
+}
+
+<div class="feedback-page-wrapper">
+    <div class="container-feedback">
+        <div class="feedback-header">
+            <h2><i class="fas fa-comments" style="margin-right:10px;"></i>@ViewBag.Title</h2>
+            <p>Chúng tôi luôn lắng nghe ý kiến của bạn để cải thiện sản phẩm và dịch vụ.</p>
+        </div>
+
+        @if (TempData["FeedbackSuccessMessage"] != null)
+        {
+            <div class="success-message">
+                @TempData["FeedbackSuccessMessage"]
+            </div>
+        }
+
+        @using (Html.BeginForm("ContactFeedback", "Home", FormMethod.Post, new { role = "form", enctype = "multipart/form-data", @class = "feedback-form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.FullName)
+                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Ví dụ: Nguyễn Văn An" })
+                @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
             </div>
 
-            @if (TempData["FeedbackSuccessMessage"] != null)
-            {
-                <div class="success-message">
-                    @TempData["FeedbackSuccessMessage"]
-                </div>
-            }
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email)
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "vidu@email.com" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
 
-            @using (Html.BeginForm("ContactFeedback", "Home", FormMethod.Post, new { role = "form", enctype = "multipart/form-data" }))
-            {
-                @Html.AntiForgeryToken()
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.PhoneNumber)
+                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "09xxxxxxxx (tùy chọn)" })
+                @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+            </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.FullName)
-                    @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Ví dụ: Nguyễn Văn An" })
-                    @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
-                </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.FeedbackType)
+                @Html.DropDownListFor(m => m.FeedbackType, Model.FeedbackTypeOptions, "-- Chọn loại phản hồi --", new { @class = "form-control-select" })
+                @Html.ValidationMessageFor(m => m.FeedbackType, "", new { @class = "text-danger" })
+            </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Email)
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "vidu@email.com" })
-                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Subject)
+                @Html.TextBoxFor(m => m.Subject, new { @class = "form-control", placeholder = "Tiêu đề ngắn gọn cho phản hồi của bạn" })
+                @Html.ValidationMessageFor(m => m.Subject, "", new { @class = "text-danger" })
+            </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.PhoneNumber)
-                    @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "09xxxxxxxx (tùy chọn)" })
-                    @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
-                </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Message)
+                @Html.TextAreaFor(m => m.Message, new { @class = "form-control", rows = 5, placeholder = "Nội dung chi tiết phản hồi của bạn..." })
+                @Html.ValidationMessageFor(m => m.Message, "", new { @class = "text-danger" })
+            </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.FeedbackType)
-                    @Html.DropDownListFor(m => m.FeedbackType, Model.FeedbackTypeOptions, "-- Chọn loại phản hồi --", new { @class = "form-control-select" })
-                    @Html.ValidationMessageFor(m => m.FeedbackType, "", new { @class = "text-danger" })
-                </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.AttachedImageFile)
+                <input type="file" name="AttachedImageFile" id="AttachedImageFile" class="form-control-file" accept="image/jpeg,image/png,image/gif" />
+                @Html.ValidationMessageFor(m => m.AttachedImageFile, "", new { @class = "text-danger" })
+            </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Subject)
-                    @Html.TextBoxFor(m => m.Subject, new { @class = "form-control", placeholder = "Tiêu đề ngắn gọn cho phản hồi của bạn" })
-                    @Html.ValidationMessageFor(m => m.Subject, "", new { @class = "text-danger" })
-                </div>
+            <div class="form-group checkbox-group">
+                @Html.CheckBoxFor(m => m.AllowContact)
+                @Html.LabelFor(m => m.AllowContact)
+            </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Message)
-                    @Html.TextAreaFor(m => m.Message, new { @class = "form-control", rows = 5, placeholder = "Nội dung chi tiết phản hồi của bạn..." })
-                    @Html.ValidationMessageFor(m => m.Message, "", new { @class = "text-danger" })
-                </div>
+            <div class="form-group">
+                <button type="submit" class="btn-submit-feedback"><i class="fas fa-paper-plane" style="margin-right:8px;"></i>Gửi Phản Hồi</button>
+            </div>
+        }
+    </div>
+</div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.AttachedImageFile)
-                    @Html.TextBoxFor(m => m.AttachedImageFile, new { type = "file", @class = "form-control-file" })
-                    @Html.ValidationMessageFor(m => m.AttachedImageFile, "", new { @class = "text-danger" })
-                </div>
-
-                <div class="form-group checkbox-group">
-                    @Html.CheckBoxFor(m => m.AllowContact) @* Sẽ tự check nếu Model.AllowContact là true *@
-                    @Html.LabelFor(m => m.AllowContact)
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn-submit-feedback"><i class="fas fa-paper-plane" style="margin-right:8px;"></i>Gửi Phản Hồi</button>
-                </div>
-            }
-        </div>
-    </body>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

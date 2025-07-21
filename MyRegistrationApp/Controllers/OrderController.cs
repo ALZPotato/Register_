@@ -225,14 +225,14 @@ namespace MyRegistrationApp.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var user = _db.Users.SingleOrDefault(u => u.Username == User.Identity.Name); // THAY THẾ Users
+            var user = _db.Users.SingleOrDefault(u => u.Username == User.Identity.Name); 
             if (user == null)
             {
                 return RedirectToAction("Login", "Account");
             }
 
             // 1. Tìm đơn hàng gốc trong DB
-            var orderFromDb = _db.Orders.FirstOrDefault(o => o.OrderID == id && o.UserID == user.UserID); // THAY THẾ Orders
+            var orderFromDb = _db.Orders.FirstOrDefault(o => o.OrderID == id && o.UserID == user.UserID);
 
             if (orderFromDb == null)
             {
@@ -257,7 +257,7 @@ namespace MyRegistrationApp.Controllers
                 Items = orderFromDb.OrderDetails.Select(detail => new UserOrderDetailViewModel
                 {
                     ProductID = detail.ProductID,
-                    ProductName = detail.Product?.ProductName, // Dùng ?. để an toàn nếu Product bị null
+                    ProductName = detail.Product?.ProductName, 
                     ProductImageFileName = detail.Product?.ImageFileName,
                     Quantity = detail.Quantity,
                     Price = detail.Price

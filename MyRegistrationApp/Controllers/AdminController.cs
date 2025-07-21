@@ -20,7 +20,7 @@ namespace MyRegistrationApp.Controllers
         {
             // Khởi tạo DataContext trong constructor
             string connectionString = ConfigurationManager.ConnectionStrings["MyWebAppDBConnectionString"].ConnectionString;
-            _db = new UserDataDataContext(connectionString); // THAY THẾ UserDataDataContext bằng tên DataContext của bạn
+            _db = new UserDataDataContext(connectionString);
         }
         public ActionResult Index()
         {
@@ -33,7 +33,7 @@ namespace MyRegistrationApp.Controllers
         {
             ViewBag.Title = "Quản Lý Phản Hồi";
             ViewBag.CurrentFilter = searchString;
-            IQueryable<CustomerFeedback> feedbacksQuery = _db.CustomerFeedbacks; // THAY THẾ CustomerFeedbacks (Table<T>)
+            IQueryable<CustomerFeedback> feedbacksQuery = _db.CustomerFeedbacks; 
             if (!String.IsNullOrEmpty(searchString))
             {
                 feedbacksQuery = feedbacksQuery.Where(s => (s.Subject != null && s.Subject.Contains(searchString)) ||
@@ -45,12 +45,12 @@ namespace MyRegistrationApp.Controllers
             var feedbacks = feedbacksQuery.ToList();
             return View(feedbacks);
         }
-        // POST: Admin/MarkAsResolved - (Giả sử bạn đã có action này)
+        // POST: Admin/MarkAsResolved 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult MarkAsResolved(int feedbackId, bool isResolved)
         {
-            var feedback = _db.CustomerFeedbacks.SingleOrDefault(f => f.FeedbackID == feedbackId); // THAY THẾ
+            var feedback = _db.CustomerFeedbacks.SingleOrDefault(f => f.FeedbackID == feedbackId); 
             if (feedback != null)
             {
                 feedback.IsResolved = isResolved;
@@ -65,7 +65,7 @@ namespace MyRegistrationApp.Controllers
             ViewBag.Title = "Quản Lý Sản Phẩm";
             ViewBag.CurrentFilter = searchString;
 
-            IQueryable<Product> productsQuery = _db.Products; // THAY THẾ Products (Table<T>) và Product (Lớp Entity)
+            IQueryable<Product> productsQuery = _db.Products; 
 
             if (!String.IsNullOrEmpty(searchString))
             {
@@ -81,7 +81,7 @@ namespace MyRegistrationApp.Controllers
 
         private List<SelectListItem> GetCategoryOptions(int? selectedCategoryId = null)
         {
-            var categoriesFromDb = _db.Categories // THAY THẾ Categories (Table<T>) và Category (Lớp Entity)
+            var categoriesFromDb = _db.Categories 
                                       .OrderBy(c => c.CategoryName)
                                       .Select(c => new // Tạo một anonymous type hoặc một DTO đơn giản trước
                                       {
@@ -150,7 +150,7 @@ namespace MyRegistrationApp.Controllers
 
             if (ModelState.IsValid)
             {
-                Product newProduct = new Product() // THAY THẾ Product (Lớp Entity)
+                Product newProduct = new Product() 
                 {
                     ProductName = model.ProductName,
                     Description = model.Description,
@@ -161,7 +161,7 @@ namespace MyRegistrationApp.Controllers
                     IsActive = model.IsActive,
                     DateCreated = DateTime.Now
                 };
-                _db.Products.InsertOnSubmit(newProduct); // THAY THẾ Products (Table<T>)
+                _db.Products.InsertOnSubmit(newProduct);
                 try
                 {
                     _db.SubmitChanges();
@@ -180,7 +180,7 @@ namespace MyRegistrationApp.Controllers
         public ActionResult EditProduct(int? id)
         {
             if (id == null) { return new HttpStatusCodeResult(HttpStatusCode.BadRequest); }
-            Product product = _db.Products.FirstOrDefault(p => p.ProductID == id); // THAY THẾ
+            Product product = _db.Products.FirstOrDefault(p => p.ProductID == id);
             if (product == null) { return HttpNotFound(); }
 
             ViewBag.Title = "Chỉnh Sửa Sản Phẩm: " + product.ProductName;
@@ -211,8 +211,6 @@ namespace MyRegistrationApp.Controllers
 
             if (model.ProductImageFile != null && model.ProductImageFile.ContentLength > 0)
             {
-                // Validate file mới (tương tự Create)
-                // ... (code validate file như trong CreateProduct)
                 if (model.ProductImageFile.ContentLength > 5 * 1024 * 1024) { ModelState.AddModelError("ProductImageFile", "Ảnh không quá 5MB."); }
                 var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
                 var fileExtension = Path.GetExtension(model.ProductImageFile.FileName)?.ToLower();
@@ -246,7 +244,7 @@ namespace MyRegistrationApp.Controllers
 
             if (ModelState.IsValid)
             {
-                Product productToUpdate = _db.Products.FirstOrDefault(p => p.ProductID == model.ProductID); // THAY THẾ
+                Product productToUpdate = _db.Products.FirstOrDefault(p => p.ProductID == model.ProductID);
                 if (productToUpdate == null) { return HttpNotFound(); }
 
                 productToUpdate.ProductName = model.ProductName;
@@ -276,7 +274,7 @@ namespace MyRegistrationApp.Controllers
         public ActionResult DeleteProduct(int? id)
         {
             if (id == null) { return new HttpStatusCodeResult(HttpStatusCode.BadRequest); }
-            Product product = _db.Products.FirstOrDefault(p => p.ProductID == id); // THAY THẾ
+            Product product = _db.Products.FirstOrDefault(p => p.ProductID == id); 
             if (product == null) { return HttpNotFound(); }
             ViewBag.Title = "Xác Nhận Xóa Sản Phẩm";
             return View(product);
@@ -287,7 +285,7 @@ namespace MyRegistrationApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteProductConfirmed(int id)
         {
-            Product productToDelete = _db.Products.FirstOrDefault(p => p.ProductID == id); // THAY THẾ
+            Product productToDelete = _db.Products.FirstOrDefault(p => p.ProductID == id);
             if (productToDelete == null) { return HttpNotFound(); }
 
             string imagePathToDelete = null;
@@ -297,7 +295,7 @@ namespace MyRegistrationApp.Controllers
             }
             try
             {
-                _db.Products.DeleteOnSubmit(productToDelete); // THAY THẾ
+                _db.Products.DeleteOnSubmit(productToDelete); 
                 _db.SubmitChanges();
 
                 if (imagePathToDelete != null && System.IO.File.Exists(imagePathToDelete))
@@ -328,7 +326,7 @@ namespace MyRegistrationApp.Controllers
             ViewBag.CurrentFilter = searchString;
             ViewBag.StatusFilter = statusFilter;
 
-            IQueryable<Order> ordersQuery = _db.Orders.OrderByDescending(o => o.OrderDate); // Sắp xếp đơn hàng mới nhất lên đầu // THAY THẾ Order và Orders
+            IQueryable<Order> ordersQuery = _db.Orders.OrderByDescending(o => o.OrderDate); // Sắp xếp đơn hàng mới nhất lên đầu 
 
             // Lọc theo từ khóa tìm kiếm (mã đơn hàng, tên người nhận, sđt)
             if (!String.IsNullOrEmpty(searchString))
@@ -364,7 +362,7 @@ namespace MyRegistrationApp.Controllers
         };
 
 
-            return View(orders); // Sẽ tạo View Views/Admin/Orders.cshtml
+            return View(orders); 
         }
         public ActionResult OrderDetail(int? id)
         {
@@ -374,7 +372,7 @@ namespace MyRegistrationApp.Controllers
             }
 
             // 1. Tìm đơn hàng trong DB
-            Order orderFromDb = _db.Orders.FirstOrDefault(o => o.OrderID == id); // THAY THẾ Order và Orders
+            Order orderFromDb = _db.Orders.FirstOrDefault(o => o.OrderID == id);
 
             if (orderFromDb == null)
             {
@@ -391,7 +389,7 @@ namespace MyRegistrationApp.Controllers
                 TotalAmount = orderFromDb.TotalAmount,
 
                 // Gán thông tin khách hàng (kiểm tra null để an toàn)
-                CustomerFullName = orderFromDb.User?.FullName, // Dùng ?.
+                CustomerFullName = orderFromDb.User?.FullName, 
                 CustomerUsername = orderFromDb.User?.Username,
 
                 // Gán thông tin giao hàng
@@ -405,7 +403,7 @@ namespace MyRegistrationApp.Controllers
                 Items = orderFromDb.OrderDetails.Select(detail => new OrderDetailViewModel
                 {
                     ProductID = detail.ProductID,
-                    ProductName = detail.Product?.ProductName, // Dùng ?.
+                    ProductName = detail.Product?.ProductName, 
                     Quantity = detail.Quantity,
                     Price = detail.Price
                 }).ToList(),
@@ -432,12 +430,10 @@ namespace MyRegistrationApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult UpdateOrderStatus(int orderId, string status)
         {
-            // ... (Code của action này giữ nguyên như trước)
-            Order orderToUpdate = _db.Orders.FirstOrDefault(o => o.OrderID == orderId); // THAY THẾ
-                                                                                        // ...
+            Order orderToUpdate = _db.Orders.FirstOrDefault(o => o.OrderID == orderId);
+                                                                                       
             orderToUpdate.Status = status;
             _db.SubmitChanges();
-            // ...
             return RedirectToAction("OrderDetail", new { id = orderId });
         }
     }

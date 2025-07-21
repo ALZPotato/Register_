@@ -12,9 +12,6 @@ using System.Security.Principal;
 using System.Text;
 using System.Security.Cryptography;
 
-// THAY THẾ các placeholder bằng tên thực tế từ project LINQ to SQL của bạn
-// Ví dụ: UserDataDataContext, User, CartItem
-
 namespace MyRegistrationApp.Controllers
 {
     public class AccountController : Controller
@@ -24,7 +21,7 @@ namespace MyRegistrationApp.Controllers
         public AccountController()
         {
             string connectionString = ConfigurationManager.ConnectionStrings["MyWebAppDBConnectionString"].ConnectionString;
-            _db = new UserDataDataContext(connectionString); // THAY THẾ UserDataDataContext
+            _db = new UserDataDataContext(connectionString); 
         }
 
         // ... (Action Register của bạn) ...
@@ -33,14 +30,11 @@ namespace MyRegistrationApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(RegisterViewModel model)
         {
-            // ... (Code của bạn cho Register) ...
             if (ModelState.IsValid)
             {
-                // KHÔNG dùng "using (UserDataDataContext db = new UserDataDataContext())" nữa.
-                // Thay vào đó, sử dụng đối tượng "_db" đã được khởi tạo trong constructor của controller.
 
                 // 1. Kiểm tra xem username đã tồn tại chưa
-                var existingUser = _db.Users.FirstOrDefault(u => u.Username == model.Username); // Dùng _db
+                var existingUser = _db.Users.FirstOrDefault(u => u.Username == model.Username); 
                 if (existingUser != null)
                 {
                     ModelState.AddModelError("Username", "Tên đăng nhập này đã được sử dụng.");
@@ -51,21 +45,21 @@ namespace MyRegistrationApp.Controllers
                 string hashedPassword = HashPassword(model.Password);
 
                 // 3. Tạo đối tượng User mới
-                User newUser = new User // THAY THẾ User bằng tên lớp entity của bạn
+                User newUser = new User
                 {
                     Username = model.Username,
                     PasswordHash = hashedPassword,
                     FullName = model.FullName,
-                    Business = model.Business, // Business là tên cột trong DB, Major là thuộc tính trong ViewModel
+                    Business = model.Business, 
                     RegisteredDate = DateTime.Now,
                     Role = "User" // Gán vai trò mặc định là "User"
                 };
 
                 // 4. Thêm user mới và lưu vào DB
-                _db.Users.InsertOnSubmit(newUser); // Dùng _db
+                _db.Users.InsertOnSubmit(newUser); 
                 try
                 {
-                    _db.SubmitChanges(); // Dùng _db
+                    _db.SubmitChanges(); 
                     ViewBag.Message = "Đăng ký thành công! Bạn có thể đăng nhập ngay.";
                     return View("RegistrationSuccess"); // Chuyển đến trang thông báo thành công
                 }
@@ -97,7 +91,7 @@ namespace MyRegistrationApp.Controllers
                 return View(model);
             }
 
-            var user = _db.Users.FirstOrDefault(u => u.Username == model.Username); // THAY THẾ Users
+            var user = _db.Users.FirstOrDefault(u => u.Username == model.Username); 
 
             if (user != null)
             {
@@ -138,7 +132,6 @@ namespace MyRegistrationApp.Controllers
         }
 
 
-        // THÊM PHƯƠNG THỨC NÀY VÀO AccountController
         private void MergeSessionCartWithDatabaseCart(int userId)
         {
             // Lấy giỏ hàng tạm thời trong Session (khi chưa đăng nhập)

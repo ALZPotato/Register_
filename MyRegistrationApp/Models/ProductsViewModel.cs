@@ -8,7 +8,7 @@ namespace MyRegistrationApp.Models
     public class ProductsViewModel
     {
         public List<Category> Categories { get; set; }
-        public List<Product> ProductsToList { get; set; } // THÊM DÒNG NÀY
+        public List<Product> ProductsToList { get; set; }
         public string CurrentCategoryName { get; set; } // Để hiển thị tên danh mục đang chọn (tùy chọn)
 
         public ProductsViewModel()

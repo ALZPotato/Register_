@@ -7,7 +7,7 @@ using System.Web.Routing;
 using System.Web.Security;
 using System.Security.Principal;
 
-namespace MyRegistrationApp // Thay bằng namespace của bạn
+namespace MyRegistrationApp
 {
     public class MvcApplication : System.Web.HttpApplication
     {

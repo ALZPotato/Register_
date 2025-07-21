@@ -1,61 +1,59 @@
 ﻿@model MyRegistrationApp.Models.LoginViewModel
 
 @{
-    ViewBag.Title = "Đăng Nhập The Coffee"; // Thay đổi tiêu đề cho phù hợp
-    Layout = null; // Quan trọng: Không sử dụng layout chung
+    ViewBag.Title = "Đăng Nhập - The Coffee";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - The Coffee</title>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+@section styles {
     <style>
-        body {
-            font-family: 'Open Sans', sans-serif;
-            background-color: #fdfaf6; /* Màu kem rất nhạt, ấm hơn trắng tinh */
-            color: #333;
-            margin: 0;
-            padding: 0;
+        .login-page-wrapper {
+            /* Tạo không gian trên dưới và căn giữa nội dung */
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            line-height: 1.6;
+            padding: 50px 15px; /* Khoảng cách trên dưới */
+            min-height: calc(100vh - 250px); /* Chiều cao tối thiểu = chiều cao màn hình - (header + footer) */
         }
 
-        .login-container { /* Đổi tên class cho phù hợp */
+        .login-container {
             background-color: #ffffff;
             padding: 40px;
             border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 420px; /* Có thể nhỏ hơn trang đăng ký một chút */
+            max-width: 450px; /* Tăng max-width một chút */
             text-align: center;
+            border: 1px solid #eae0d1; /* Thêm border nhẹ nhàng */
         }
 
-            .login-container h2 {
-                font-family: 'Merriweather', serif;
-                color: #4a3b31; /* Màu nâu cà phê đậm */
+            .login-container .login-header h2 {
+                font-family: 'Playfair Display', serif;
+                color: #4A3B31;
                 margin-top: 0;
-                margin-bottom: 15px;
-                font-size: 28px;
+                margin-bottom: 10px;
+                font-size: 2em; /* Điều chỉnh kích thước */
             }
 
-            .login-container p.subtitle {
+            .login-container .login-header .coffee-icon { /* Style cho icon logo */
+                font-size: 1.5em;
+                color: #8B5A2B;
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            .login-container .login-header p.subtitle {
                 color: #777;
                 margin-bottom: 30px;
                 font-size: 1em;
             }
 
-        .form-group {
+        .login-form .form-group {
             margin-bottom: 20px;
             text-align: left;
         }
 
-            .form-group label {
+            .login-form .form-group label {
                 display: block;
                 font-weight: 600;
                 margin-bottom: 8px;
@@ -63,7 +61,7 @@
                 font-size: 0.9em;
             }
 
-        .form-control {
+        .login-form .form-control {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
@@ -73,33 +71,43 @@
             transition: border-color 0.3s ease;
         }
 
-            .form-control:focus {
-                border-color: #8c6e5a; /* Màu nâu cà phê nhạt hơn khi focus */
+            .login-form .form-control:focus {
+                border-color: #8c6e5a;
                 outline: none;
-                box-shadow: 0 0 0 2px rgba(74, 59, 49, 0.1);
+                box-shadow: 0 0 0 3px rgba(74, 59, 49, 0.1);
             }
 
-        .checkbox-group { /* Style cho checkbox "Ghi nhớ đăng nhập" */
-            text-align: left;
-            margin-bottom: 20px;
+        .login-form .checkbox-group {
+            display: flex;
+            justify-content: space-between; /* Đẩy "Quên mật khẩu" sang phải */
+            align-items: center;
+            margin-bottom: 25px;
             font-size: 0.9em;
         }
 
-            .checkbox-group label {
+            .login-form .checkbox-group label {
                 font-weight: normal;
                 color: #555;
-                margin-left: 5px;
+                margin: 0;
                 cursor: pointer;
             }
 
-            .checkbox-group input[type="checkbox"] {
-                vertical-align: middle;
+            .login-form .checkbox-group input[type="checkbox"] {
                 margin-right: 5px;
+                vertical-align: middle;
             }
 
+            .login-form .checkbox-group .forgot-password-link {
+                color: #8c6e5a;
+                text-decoration: none;
+            }
 
-        .btn-submit {
-            background-color: #4a3b31; /* Màu nâu cà phê đậm */
+                .login-form .checkbox-group .forgot-password-link:hover {
+                    text-decoration: underline;
+                }
+
+        .login-form .btn-submit {
+            background-color: #4a3b31;
             color: white;
             padding: 12px 20px;
             border: none;
@@ -109,76 +117,46 @@
             font-weight: 600;
             width: 100%;
             transition: background-color 0.3s ease;
-            margin-top: 10px;
         }
 
-            .btn-submit:hover {
-                background-color: #382d26; /* Nâu đậm hơn khi hover */
+            .login-form .btn-submit:hover {
+                background-color: #382d26;
             }
 
-        .text-danger, .validation-summary-errors ul {
-            color: #d9534f; /* Màu đỏ cho lỗi */
+        .login-form .text-danger {
+            color: #d9534f;
             font-size: 0.85em;
-            list-style: none;
-            padding-left: 0;
             margin-top: 5px;
         }
 
-        .validation-summary-errors { /* Class này thường được MVC dùng cho summary chung */
-            margin-bottom: 15px;
-            text-align: left;
-            background-color: #f2dede; /* Nền hồng nhạt cho summary lỗi */
-            border: 1px solid #ebccd1;
-            padding: 10px 15px;
-            border-radius: 4px;
+        .login-container .extra-links {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 0.95em;
         }
 
-            .validation-summary-errors ul {
-                margin-bottom: 0;
+            .login-container .extra-links a {
+                color: #8B5A2B;
+                font-weight: 600;
             }
-
-
-        .extra-links { /* Cho link "Quên mật khẩu" và "Đăng ký" */
-            margin-top: 25px;
-            font-size: 0.9em;
-        }
-
-            .extra-links a {
-                color: #8c6e5a; /* Màu nâu cà phê nhạt */
-                text-decoration: none;
-            }
-
-                .extra-links a:hover {
-                    text-decoration: underline;
-                    color: #4a3b31;
-                }
-
-            .extra-links .separator {
-                margin: 0 10px;
-                color: #ccc;
-            }
-
-        /* Simple coffee bean icon (optional, can use FontAwesome or SVG for better ones) */
-        .coffee-icon::before {
-            content: "☕"; /* Hoặc một SVG/ảnh nhỏ */
-            font-size: 20px;
-            margin-right: 8px;
-            color: #4a3b31;
-        }
     </style>
-</head>
-<body>
-    <div class="login-container">
-        <h2><span class="coffee-icon"></span>@ViewBag.Title</h2>
-        <p class="subtitle">Chào mừng trở lại! Đăng nhập để tiếp tục hành trình cà phê của bạn.</p>
+}
 
-        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+<div class="login-page-wrapper">
+    <div class="login-container">
+        <div class="login-header">
+            <span class="coffee-icon"><i class="fas fa-coffee"></i></span>
+            <h2>@ViewBag.Title</h2>
+            <p class="subtitle">Chào mừng trở lại! Đăng nhập để tiếp tục hành trình cà phê của bạn.</p>
+        </div>
+
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form", @class = "login-form" }))
         {
             @Html.AntiForgeryToken()
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" }) @* Thông báo lỗi chung, có thể ẩn nếu không cần thiết khi có lỗi field *@
-            @* Nếu bạn muốn ValidationSummary hiển thị rõ ràng hơn với style đã thêm: *@
-            @* @Html.ValidationSummary(false, "Vui lòng sửa các lỗi sau:", new { @class = "validation-summary-errors" }) *@
 
+            @* Hiển thị lỗi chung (ví dụ: "Tên đăng nhập hoặc mật khẩu không đúng") *@
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
             <div class="form-group">
                 @Html.LabelFor(m => m.Username, "Tên đăng nhập")
@@ -193,20 +171,26 @@
             </div>
 
             <div class="form-group checkbox-group">
-                @Html.CheckBoxFor(m => m.RememberMe)
-                @Html.LabelFor(m => m.RememberMe, "Ghi nhớ đăng nhập")
+                <div>
+                    @Html.CheckBoxFor(m => m.RememberMe)
+                    @Html.LabelFor(m => m.RememberMe)
+                </div>
+                <div>
+                    @Html.ActionLink("Quên mật khẩu?", "ForgotPassword", "Account", null, new { @class = "forgot-password-link" })
+                </div>
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Đăng Nhập" class="btn-submit" />
-            </div>
-
-            <div class="extra-links">
-                @Html.ActionLink("Quên mật khẩu?", "ForgotPassword", "Account") @* Bạn sẽ cần tạo action ForgotPassword sau *@
-                <span class="separator">|</span>
-                @Html.ActionLink("Chưa có tài khoản? Đăng ký ngay!", "Register", "Account")
+                <button type="submit" class="btn-submit"><i class="fas fa-sign-in-alt"></i> Đăng Nhập</button>
             </div>
         }
+
+        <div class="extra-links">
+            Chưa có tài khoản? @Html.ActionLink("Đăng ký ngay!", "Register", "Account")
+        </div>
     </div>
-</body>
-</html>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval") @* Cho client-side validation *@
+}

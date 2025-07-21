@@ -1,27 +1,17 @@
-﻿@{
+﻿@* File: Views/Account/RegistrationSuccess.cshtml *@
+@{
     ViewBag.Title = "Đăng Ký Thành Công!";
-    Layout = null;
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Sử dụng layout chung
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - The Coffee</title>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+@section styles {
     <style>
-        body {
-            font-family: 'Open Sans', sans-serif;
-            background-color: #fdfaf6;
-            color: #333;
-            margin: 0;
-            padding: 0;
+        .success-page-wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            text-align: center;
+            padding: 50px 15px;
+            min-height: calc(100vh - 200px); /* Điều chỉnh để phù hợp với chiều cao header + footer */
         }
 
         .success-container {
@@ -30,82 +20,81 @@
             border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 500px;
+            max-width: 550px; /* Rộng hơn một chút để chứa text */
+            text-align: center;
+            border: 1px solid #eae0d1;
         }
 
             .success-container h2 {
-                font-family: 'Merriweather', serif;
-                color: #4a3b31; /* Màu nâu cà phê đậm */
+                font-family: 'Playfair Display', serif;
+                color: #4A3B31;
                 margin-top: 0;
+                margin-bottom: 15px;
+                font-size: 2em; /* Điều chỉnh kích thước */
+            }
+
+            .success-container .success-icon {
+                font-size: 4em; /* Làm icon to hơn */
+                color: #5cb85c; /* Màu xanh lá cho thành công */
                 margin-bottom: 20px;
-                font-size: 32px;
+                display: block;
             }
 
-        .success-icon {
-            font-size: 60px;
-            color: #6f4e37; /* Màu nâu cà phê vừa */
-            margin-bottom: 25px;
-            display: block;
-        }
-            /* Thay thế bằng icon thực tế nếu có (SVG, FontAwesome) */
-            .success-icon::before {
-                content: "🎉"; /* Hoặc ☕, ✓ */
+            .success-container p {
+                color: #555;
+                font-size: 1.1em;
+                margin-bottom: 30px;
+                line-height: 1.7;
             }
 
-
-        .success-container p {
-            color: #555;
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            line-height: 1.7;
-        }
-
-        .action-links a {
-            display: inline-block;
-            background-color: #4a3b31;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            margin: 0 10px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            font-size: 1em;
-        }
-
-            .action-links a:hover {
-                background-color: #382d26;
-                transform: translateY(-2px);
+            .success-container .action-links a {
+                display: inline-block;
+                background-color: #4a3b31;
+                color: white !important;
+                padding: 12px 25px;
+                border-radius: 5px;
+                text-decoration: none;
+                font-weight: 600;
+                margin: 5px; /* Thêm margin để không dính vào nhau trên mobile */
+                transition: background-color 0.3s ease, transform 0.2s ease;
+                font-size: 1em;
+                border: 1px solid transparent;
             }
 
-            .action-links a.secondary {
-                background-color: #f0ebe5; /* Màu kem nhạt */
-                color: #4a3b31;
-                border: 1px solid #dcd3ca;
-            }
-
-                .action-links a.secondary:hover {
-                    background-color: #e6ded7;
+                .success-container .action-links a:hover {
+                    background-color: #382d26;
+                    transform: translateY(-2px);
                 }
+
+                .success-container .action-links a.secondary {
+                    background-color: transparent;
+                    color: #4a3b31 !important;
+                    border-color: #4a3b31;
+                }
+
+                    .success-container .action-links a.secondary:hover {
+                        background-color: #4a3b31;
+                        color: white !important;
+                    }
     </style>
-</head>
-<body>
+}
+
+<div class="success-page-wrapper">
     <div class="success-container">
-        <span class="success-icon"></span>
+        <span class="success-icon"><i class="fas fa-check-circle"></i></span>
         <h2>@ViewBag.Title</h2>
-        <p>@ViewBag.Message</p>
-        <p>Chào mừng bạn đến với The Coffee. Hãy bắt đầu hành trình khám phá hương vị tuyệt vời!</p>
+
+        @if (ViewBag.Message != null)
+        {
+            <p><strong>@ViewBag.Message</strong></p>
+        }
+
+        <p>Chào mừng bạn đến với The Coffee. Hãy đăng nhập để bắt đầu hành trình khám phá hương vị tuyệt vời!</p>
+
         <div class="action-links">
-            @if (User.Identity.IsAuthenticated) // Hoặc một cách khác để kiểm tra logic đăng nhập
-            {
-                @Html.ActionLink("Về Trang Chủ", "Index", "Home", null, new { @class = "primary" })
-            }
-            else
-            {
-                @Html.ActionLink("Đăng Nhập Ngay", "Login", "Account", null, new { @class = "primary" })
-                @Html.ActionLink("Khám Phá Thêm", "Index", "Home", null, new { @class = "secondary" })
-            }
+            @* Sau khi đăng ký thành công, người dùng chưa đăng nhập, nên chỉ cần link đến trang Login và trang chủ/sản phẩm *@
+            @Html.ActionLink("Đăng Nhập Ngay", "Login", "Account", null, new { @class = "primary" })
+            @Html.ActionLink("Khám Phá Sản Phẩm", "Products", "Home", null, new { @class = "secondary" })
         </div>
     </div>
-</body>
-</html>
+</div>

@@ -1,14 +1,8 @@
-﻿@{
+﻿@model MyRegistrationApp.Models.HomeViewModel
+@{
     ViewBag.Title = ViewBag.PageTitle ?? "Trang Chủ - The Coffee";
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Đảm bảo dòng này được kích hoạt
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
 }
-
-@* TOÀN BỘ HTML BÊN DƯỚI SẼ ĐƯỢC CHÈN VÀO @RenderBody() CỦA _Layout.cshtml *@
-@* Không cần <main class="main-content"> ở đây nếu _Layout.cshtml đã có div bao quanh @RenderBody()
-    hoặc nếu padding-top cho body trong Site.css đã xử lý việc header che nội dung.
-    Nếu Site.css có class .main-content với padding-top, bạn có thể bao bọc nội dung này bằng div đó.
-    Giả sử Site.css đã có padding-top cho body, chúng ta có thể bỏ qua .main-content ở đây.
-*@
 
 <!-- Hero Section -->
 <section class="hero-section">
@@ -26,43 +20,42 @@
     <div class="container">
         <div class="section-title">
             <h2>Sản Phẩm Nổi Bật</h2>
-            <p class="subtitle">Những lựa chọn được yêu thích nhất từ The Coffee.</p>
+            <p class="subtitle">Những sản phẩm mới nhất từ The Coffee.</p>
         </div>
-        <div class="product-grid">
-            <!-- Product Item 1 -->
-            <div class="product-card">
-                <img src="@Url.Content("~/Content/Images/product-featured-1.jpg")" alt="Cà Phê Hạt Đặc Biệt">
-                <div class="product-info">
-                    <div>
-                        <h4>Cà Phê Hạt Rang Đặc Biệt</h4>
-                        <p class="price">250.000 VNĐ</p>
+
+        @if (Model.FeaturedProducts != null && Model.FeaturedProducts.Any())
+        {
+            <div class="product-grid">
+                @foreach (var product in Model.FeaturedProducts)
+                {
+                    <div class="product-card">
+                        <a href="@Url.Action("ProductDetail", "Home", new { id = product.ProductID })">
+                            @if (!string.IsNullOrEmpty(product.ImageFileName))
+                            {
+                                <img src="@Url.Content("~/Uploads/ProductImages/" + product.ImageFileName)" alt="@product.ProductName">
+                            }
+                            else
+                            {
+                                <img src="@Url.Content("~/Content/Images/placeholder-product.png")" alt="Chưa có ảnh">
+                            }
+                        </a>
+                        <div class="product-info">
+                            <div>
+                                <h4>@product.ProductName</h4>
+                                <p class="price">@string.Format("{0:N0} VNĐ", product.Price)</p>
+                            </div>
+                            <a href="@Url.Action("ProductDetail", "Home", new { id = product.ProductID })" class="btn-view-product">Xem Chi Tiết</a>
+                        </div>
                     </div>
-                    <a href="#" class="btn-view-product">Xem Chi Tiết</a> @* Sửa link sau *@
-                </div>
+                }
             </div>
-            <!-- Product Item 2 -->
-            <div class="product-card">
-                <img src="@Url.Content("~/Content/Images/product-featured-2.jpg")" alt="Bộ Dụng Cụ Pha Phin">
-                <div class="product-info">
-                    <div>
-                        <h4>Bộ Dụng Cụ Pha Phin Cao Cấp</h4>
-                        <p class="price">380.000 VNĐ</p>
-                    </div>
-                    <a href="#" class="btn-view-product">Xem Chi Tiết</a> @* Sửa link sau *@
-                </div>
+        }
+        else
+        {
+            <div class="text-center">
+                <p>Hiện chưa có sản phẩm nổi bật nào để hiển thị. Vui lòng quay lại sau.</p>
             </div>
-            <!-- Product Item 3 -->
-            <div class="product-card">
-                <img src="@Url.Content("~/Content/Images/product-featured-3.jpg")" alt="Ly Sứ Giữ Nhiệt">
-                <div class="product-info">
-                    <div>
-                        <h4>Ly Sứ Giữ Nhiệt The Coffee</h4>
-                        <p class="price">180.000 VNĐ</p>
-                    </div>
-                    <a href="#" class="btn-view-product">Xem Chi Tiết</a> @* Sửa link sau *@
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </section>
 
@@ -93,10 +86,7 @@
         <a href="@Url.Action("Register", "Account")" class="btn-cta" style="background-color: #FFF8DC; color:#4A3B31;">Đăng Ký Ngay</a>
     </div>
 </section>
-
-@* Nếu trang Index cần script riêng, bạn có thể thêm vào đây *@
 @section scripts {
     <script type="text/javascript">
-        // console.log("Trang Index đã tải script riêng.");
     </script>
 }
